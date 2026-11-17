@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Classes Gramaticais</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,700&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE: estudo rápido e alegre, como um caderno marcado com canetas marca-texto.
+   IDEA: a frase é uma linha de caderno; cada resposta "pinta" a palavra com o marca-texto da sua classe.
+   PICTURE: a própria frase grande, com chips coloridos e rótulos embaixo; o jogo é a imagem.
+   COLOUR and TYPE: papel branco/tinta escura, 10 cores fixas de classe como acentos; Literata para a frase, Nunito para a interface.
+   LAYOUT: barra de placar no topo, frase grande, opções em grade de botões numerados, legenda recolhível ao lado/abaixo. */
+:root{color-scheme:light dark;--bg:light-dark(#fbfaf7,#14151a);--card:light-dark(#ffffff,#1d1f26);--ink:light-dark(#1b1c22,#ecebe6);--mute:light-dark(#6b6d78,#9a9ca8);--line:light-dark(#e6e3da,#2d3039);--rule:light-dark(#dfe8f3,#232838);--ok:#16a34a;--bad:#dc2626}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Nunito,system-ui,sans-serif;overflow-x:clip}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,select:focus-visible{outline:3px solid #3b82f6;outline-offset:2px}
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;padding:12px max(4vw,14px);border-bottom:1px solid var(--line);background:var(--card)}
+.top h1{font:700 20px/1.1 Literata,serif;margin:0 auto 0 0}
+.stat{display:flex;flex-direction:column;align-items:flex-end;line-height:1.1}
+.stat b{font-size:19px;font-variant-numeric:tabular-nums}.stat span{font-size:12px;color:var(--mute)}
+.tb{display:flex;gap:6px}
+.btn{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 12px;min-height:40px;font-weight:700;font-size:14px}
+.btn:hover{border-color:var(--mute)}
+.wrap{max-width:1240px;margin:0 auto;padding:clamp(14px,3vw,32px) max(4vw,14px);display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:24px}
+.wrap.nolegend{grid-template-columns:minmax(0,1fr)}.wrap.nolegend .legend{display:none}
+.lvl{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px;font-size:14px;color:var(--mute)}
+.lvl strong{color:var(--ink)}
+.bar{flex:1 1 140px;height:8px;border-radius:9px;background:var(--line);overflow:hidden;max-width:260px}
+.bar i{display:block;height:100%;background:var(--ok);transition:width .3s}
+.paper{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,3vw,34px);box-shadow:0 10px 30px -18px #0004}
+.sent{display:flex;flex-wrap:wrap;align-items:flex-start;gap:14px 8px;min-height:120px;font:500 clamp(24px,4.2vw,38px)/1.2 Literata,serif}
+.w{display:inline-flex;flex-direction:column;align-items:center;gap:3px}
+.w .t{padding:2px 8px;border-radius:9px;border:2px solid transparent;transition:background .25s,color .25s,transform .2s}
+.w .lab{font:700 11px/1.1 Nunito,sans-serif;color:var(--mute);min-height:12px;max-width:120px;text-align:center}
+.w.cur .t{border-color:var(--ink);border-style:dashed;animation:pulse 1.1s ease-in-out infinite}
+.w.pend .t{color:var(--ink)}
+.w.skip .t{opacity:.55}
+.w.wrong .t{box-shadow:0 0 0 3px var(--bad)}
+.p{font:500 clamp(24px,4.2vw,38px)/1.2 Literata,serif;margin-left:-14px;padding-top:2px}
+@keyframes pulse{50%{transform:translateY(-2px)}}
+@media (prefers-reduced-motion:reduce){.w.cur .t{animation:none}.w .t{transition:none}}
+.q{margin:22px 0 12px;font-size:18px;display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline}
+.q b{font:700 22px Literata,serif}
+.q .mode{font-size:12px;font-weight:800;padding:2px 8px;border-radius:20px;background:var(--line);color:var(--mute)}
+.opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
+.o{display:flex;align-items:center;gap:10px;text-align:left;border:2px solid var(--line);background:var(--card);border-radius:12px;padding:9px 12px;min-height:48px;font-weight:700;font-size:15px;transition:transform .08s}
+.o:hover:not(:disabled){border-color:var(--sw);transform:translateY(-1px)}
+.o .k{flex:none;width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font-size:12px;background:var(--sw);color:var(--swt)}
+.o:disabled{opacity:.3;cursor:default}
+.o.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--card));opacity:1}
+.o.picked{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--card));opacity:1}
+.fb{min-height:58px;margin-top:14px;font-size:16px}
+.fb .box{border-radius:12px;padding:12px 14px;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+.fb .box.bad{background:color-mix(in srgb,var(--bad) 10%,var(--card));border:1px solid color-mix(in srgb,var(--bad) 40%,transparent)}
+.fb .box.good{background:color-mix(in srgb,var(--ok) 10%,var(--card));border:1px solid color-mix(in srgb,var(--ok) 35%,transparent)}
+.fb .box.hint{background:var(--bg);border:1px dashed var(--line)}
+.fb .ex{flex:1 1 300px}
+.chip{display:inline-block;padding:1px 8px;border-radius:7px;font-weight:800;font-size:14px}
+.go{margin-left:auto}
+.go.btn{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center;font-size:13px;color:var(--mute)}
+kbd{font:700 12px Nunito;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 5px;background:var(--card)}
+.legend{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;align-self:start;position:sticky;top:12px;font-size:14px}
+.legend h2{font:700 16px Literata,serif;margin:0 0 10px}
+.legend details{border-top:1px solid var(--line);padding:6px 0}
+.legend summary{display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:800;list-style:none}
+.legend summary::-webkit-details-marker{display:none}
+.dot{width:14px;height:14px;border-radius:4px;flex:none}
+.legend ul{list-style:none;margin:6px 0 2px 22px;padding:0;display:grid;gap:3px}
+.legend li{display:flex;gap:7px;align-items:center;font-size:13px}
+.legend .tip{font-size:12.5px;color:var(--mute);margin:4px 0 2px 22px}
+.toast{position:fixed;left:50%;top:18px;transform:translate(-50%,-140%);opacity:0;background:var(--ink);color:var(--card);padding:12px 18px;border-radius:12px;font-weight:800;transition:transform .35s;z-index:9;max-width:92vw;text-align:center}
+.toast.on{transform:translate(-50%,0);opacity:1}
+.modal{position:fixed;inset:0;background:#0007;display:none;place-items:center;z-index:8;padding:14px}
+.modal.on{display:grid}
+.mbox{background:var(--card);border-radius:18px;padding:22px;width:min(640px,100%);max-height:90vh;overflow:auto}
+.mbox h2{font:700 24px Literata,serif;margin:0 0 12px}
+.srow{display:grid;grid-template-columns:minmax(110px,190px) minmax(0,1fr) 80px;gap:10px;align-items:center;padding:4px 0;font-size:14px}
+.srow .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.sbar{height:10px;border-radius:9px;background:var(--line);overflow:hidden}.sbar i{display:block;height:100%}
+.miss{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+select{font:inherit;font-weight:700;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:6px 8px;min-height:40px}
+.done{font:700 14px Nunito;color:var(--mute)}
+.sent,.opts,.fb .go{-webkit-user-select:none;user-select:none;touch-action:manipulation}
+.mode.wr{background:#dbeafe;color:#1e3a8a}
+.wform{display:flex;flex-wrap:wrap;gap:8px;grid-column:1/-1}
+.wform input{flex:1 1 280px;font:600 17px Nunito,sans-serif;min-height:50px;padding:10px 14px;border:2px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink)}
+.wform input:focus{outline:none;border-color:#3b82f6}
+.wform .go{margin-left:0;min-height:50px}
+.mode.rev{background:#fde68a;color:#78350f}
+.srow span:first-child{overflow-wrap:anywhere}
+.crumbs{flex-basis:100%;font-size:15px;color:var(--mute)}.crumb{font-weight:800;color:var(--ink)}
+.w.mk{cursor:pointer}.w.mk .t{border:2px dashed var(--line)}.w.mk:hover .t{border-color:var(--mute)}
+.w.mk.sel .t{background:color-mix(in srgb,hsl(356 74% 50%) 18%,var(--card));border:2px solid hsl(356 74% 50%)}
+.w.mk .lab{font-size:12px;color:var(--mute)}
+.hwrap{max-height:340px;overflow:auto;border:1px solid var(--line);border-radius:12px;margin-top:8px}
+.htab{width:100%;border-collapse:collapse;font-size:14px}.htab th{position:sticky;top:0;background:var(--card);text-align:left;padding:8px;font-size:12px;color:var(--mute)}
+.htab td{padding:7px 8px;border-top:1px solid var(--line);vertical-align:top}.htab td:first-child{white-space:nowrap;color:var(--mute);font-size:12.5px}
+.htab .hs{font-size:12px;color:var(--mute)}.hok td:last-child{color:var(--ok);font-weight:800}.herr td:last-child{color:var(--bad);font-weight:800}
+.htxt{width:100%;height:120px;margin-top:8px;font:12px monospace}
+@media(max-width:600px){.htab{font-size:13px}.stack thead{display:none}.stack tr{display:grid;padding-block:8px}.stack td{display:flow-root;border:0;padding:2px 8px;padding-inline-start:8.5em}.stack td::before{content:attr(data-l);float:inline-start;width:8em;margin-inline-start:-8em;font-size:12px;color:var(--mute)}.stack td:empty{display:none}}
+@media(max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)}.legend{position:static}}
+@media(max-width:600px){.stat span{font-size:11px}.stat b{font-size:16px}.top h1{flex-basis:100%}.opts{grid-template-columns:repeat(2,minmax(0,1fr))}.o{font-size:14px;padding:8px}.sent{gap:10px 6px}}
+</style>
+<script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
+</head>
+<body>
+<header class="top">
+  <h1>Classes Gramaticais</h1>
+  <div class="stat"><b id="sScore">0</b><span>pontos</span></div>
+  <div class="stat"><b id="sStreak">0</b><span>sequência</span></div>
+  <div class="stat"><b id="sAcc">–</b><span>precisão</span></div>
+  <div class="stat"><b id="sSent">0</b><span>frases</span></div>
+  <div class="tb">
+    <button class="btn" id="bLeg" title="Legenda (L)">Legenda</button>
+    <button class="btn" id="bStats">Estatísticas</button>
+  </div>
+</header>
+
+<main class="wrap" id="wrap">
+  <section>
+    <div class="lvl">
+      <span>Nível <strong id="lvNum">1</strong> · <span id="lvName"></span></span>
+      <div class="bar" title="Acertos nas últimas 20 respostas deste nível"><i id="lvBar" style="width:0"></i></div>
+      <span id="lvInfo"></span>
+      <select id="lvSel" aria-label="Escolher nível"></select>
+      <select id="ordSel" aria-label="Ordem de classificação"><option value="verbo">Ordem: verbo primeiro (recomendada)</option><option value="lr">Ordem: esquerda → direita</option></select>
+    </div>
+    <div class="paper">
+      <div class="sent" id="sent" aria-live="polite"></div>
+      <div class="q" id="q"></div>
+      <div class="opts" id="opts"></div>
+      <div class="fb" id="fb"></div>
+      <div class="row">
+        <button class="btn" id="bHint">Dica (H)</button>
+        <button class="btn" id="bSkip">Pular frase</button>
+        <span>Teclas <kbd>1</kbd>–<kbd>9</kbd> <kbd>0</kbd> para responder ou marcar · <kbd>Enter</kbd> ou <kbd>Espaço</kbd> para continuar</span>
+      </div>
+    </div>
+  </section>
+  <aside class="legend" id="legend"><h2>Legenda de cores</h2><div id="legBody"></div></aside>
+</main>
+
+<div class="toast" id="toast"></div>
+<div class="modal" id="modal"><div class="mbox" id="mbox"></div></div>
+
+<script>
+{
+/* ================= CLASSES, CORES, EXPLICAÇÕES ================= */
+const CL = {
+  sub:{n:'Substantivo',h:215,s:78,l:47,subs:{pr:'próprio',cc:'comum concreto',ca:'comum abstrato',col:'coletivo'},
+    hint:'Dá para pôr "o/a/um" antes? Ela dá nome a algo (ser, objeto, lugar, sentimento)?'},
+  art:{n:'Artigo',h:220,s:6,l:46,subs:{def:'definido',ind:'indefinido'},
+    hint:'Vem logo antes de um substantivo e o determina (o, a, os, as, um, uma)?'},
+  adj:{n:'Adjetivo',h:140,s:62,l:36,subs:{},
+    hint:'Dá para dizer "muito ___"? Ela dá uma característica a um substantivo e concorda com ele?'},
+  num:{n:'Numeral',h:24,s:52,l:36,subs:{card:'cardinal',ord:'ordinal',mult:'multiplicativo',frac:'fracionário'},
+    hint:'Indica quantidade exata, ordem, multiplicação (dobro) ou fração (metade)?'},
+  pron:{n:'Pronome',h:275,s:58,l:50,subs:{reto:'pessoal reto',obl:'pessoal oblíquo',trat:'de tratamento',pos:'possessivo',dem:'demonstrativo',ind:'indefinido',rel:'relativo',int:'interrogativo'},
+    hint:'Substitui ou acompanha um substantivo indicando pessoa, posse, posição ou algo vago (eu, meu, este, alguém, que = o qual)?'},
+  v:{n:'Verbo',h:356,s:74,l:50,subs:{pri:'principal',lig:'de ligação',aux:'auxiliar'},
+    hint:'Dá para conjugar no passado e no futuro (ontem eu ___ / amanhã eu ___)?'},
+  adv:{n:'Advérbio',h:28,s:92,l:48,subs:{tem:'de tempo',lug:'de lugar',mod:'de modo',int:'de intensidade',neg:'de negação',afi:'de afirmação',duv:'de dúvida'},
+    hint:'É invariável e modifica verbo, adjetivo ou outro advérbio? Responde quando? onde? como? quanto?'},
+  prep:{n:'Preposição',h:330,s:72,l:52,subs:{s:'simples',c:'contração (prep. + artigo)'},
+    hint:'É invariável e liga duas palavras, uma dependendo da outra (de, em, para, com, a, por, sem)?'},
+  conj:{n:'Conjunção',h:45,s:92,l:40,subs:{adi:'coord. aditiva',adv:'coord. adversativa',alt:'coord. alternativa',concl:'coord. conclusiva',expl:'coord. explicativa',int:'sub. integrante',caus:'sub. causal',temp:'sub. temporal',cond:'sub. condicional',conc:'sub. concessiva',fin:'sub. final',comp:'sub. comparativa',cons:'sub. consecutiva',conf:'sub. conformativa',prop:'sub. proporcional'},
+    hint:'Liga orações (ou termos de mesma função): e, mas, ou, que, se, quando, porque, embora...?'},
+  interj:{n:'Interjeição',h:186,s:76,l:36,subs:{},
+    hint:'Expressa emoção sozinha, quase sempre com "!" (ufa!, oba!, ai!, nossa!)?'}
+};
+const ORDER = ['sub','art','adj','num','pron','v','adv','prep','conj','interj'];
+const SHORT = {sub:'subst.',art:'artigo',adj:'adjetivo',num:'numeral',pron:'pron.',v:'verbo',adv:'adv.',prep:'prep.',conj:'conj.',interj:'interj.'};
+const EXPL = {
+  'sub':'substantivo: dá nome a seres, coisas, lugares, ideias.',
+  'sub.pr':'substantivo próprio: nomeia um ser específico; escreve-se com maiúscula.',
+  'sub.cc':'substantivo comum concreto: nomeia ser que existe por si (pessoa, animal, objeto, lugar).',
+  'sub.ca':'substantivo comum abstrato: nomeia sentimento, qualidade, estado ou ação, que dependem de alguém.',
+  'sub.col':'substantivo coletivo: no singular, indica um conjunto de seres da mesma espécie.',
+  'art.def':'artigo definido (o, a, os, as): determina o substantivo de forma precisa.',
+  'art.ind':'artigo indefinido (um, uma, uns, umas): determina o substantivo de forma vaga.',
+  'adj':'adjetivo: atribui característica ao substantivo e concorda com ele.',
+  'num.card':'numeral cardinal: quantidade exata (um, dois, dez).',
+  'num.ord':'numeral ordinal: ordem ou posição (primeiro, segundo).',
+  'num.mult':'numeral multiplicativo: multiplicação (dobro, triplo).',
+  'num.frac':'numeral fracionário: divisão (meio, metade, terço).',
+  'pron.reto':'pronome pessoal do caso reto: funciona como sujeito (eu, tu, ele, nós, vós, eles).',
+  'pron.obl':'pronome pessoal oblíquo: funciona como complemento (me, te, se, o, a, lhe, mim, comigo).',
+  'pron.trat':'pronome de tratamento: forma de se dirigir a alguém (você, senhor, Vossa Excelência).',
+  'pron.pos':'pronome possessivo: indica posse (meu, seu, nosso).',
+  'pron.dem':'pronome demonstrativo: indica posição ou retoma algo (este, esse, aquele, isso, o = aquilo, mesmo).',
+  'pron.ind':'pronome indefinido: refere-se de modo vago ou genérico (alguém, todos, muito, nenhum, cada).',
+  'pron.rel':'pronome relativo: retoma um termo anterior e inicia uma oração (que = o qual, cujo, quem).',
+  'pron.int':'pronome interrogativo: usado em perguntas (quem, qual, quanto, que).',
+  'v.pri':'verbo principal: carrega o sentido da ação, processo ou existência.',
+  'v.lig':'verbo de ligação: liga o sujeito a uma característica (ser, estar, ficar, parecer, permanecer, continuar).',
+  'v.aux':'verbo auxiliar: ajuda o verbo principal numa locução verbal (estar, ter, ir, ser, poder + outro verbo).',
+  'adv.tem':'advérbio de tempo: responde "quando?".','adv.lug':'advérbio de lugar: responde "onde?".',
+  'adv.mod':'advérbio de modo: responde "como?".','adv.int':'advérbio de intensidade: indica grau (muito, tão, bem, meio).',
+  'adv.neg':'advérbio de negação.','adv.afi':'advérbio de afirmação.','adv.duv':'advérbio de dúvida.',
+  'prep.s':'preposição: palavra invariável que liga dois termos.',
+  'prep.c':'contração: preposição unida a um artigo.',
+  'conj.adi':'conjunção coordenativa aditiva: soma ideias (e, nem).','conj.adv':'conjunção coordenativa adversativa: oposição (mas, porém, contudo).',
+  'conj.alt':'conjunção coordenativa alternativa: alternância (ou, ora... ora).','conj.concl':'conjunção coordenativa conclusiva: conclusão (logo, portanto).',
+  'conj.expl':'conjunção coordenativa explicativa: explica o que foi dito (pois, que, porque).','conj.int':'conjunção subordinativa integrante: inicia oração que completa um verbo (que, se).',
+  'conj.caus':'conjunção subordinativa causal: indica causa (porque, como, já que).','conj.temp':'conjunção subordinativa temporal: indica tempo (quando, enquanto, assim que).',
+  'conj.cond':'conjunção subordinativa condicional: indica condição (se, caso).','conj.conc':'conjunção subordinativa concessiva: indica concessão (embora, ainda que).',
+  'conj.fin':'conjunção subordinativa final: indica finalidade (para que, a fim de que).','conj.comp':'conjunção subordinativa comparativa: indica comparação (que, como, quanto).',
+  'conj.cons':'conjunção subordinativa consecutiva: indica consequência (tão... que).','conj.conf':'conjunção subordinativa conformativa: indica conformidade (conforme, como, segundo).',
+  'conj.prop':'conjunção subordinativa proporcional: indica proporção (à medida que).',
+  'interj':'interjeição: exprime emoção ou sensação.'
+};
+const CONTR = {do:'de + o',da:'de + a',dos:'de + os',das:'de + as',no:'em + o',na:'em + a',nos:'em + os',nas:'em + as',pelo:'por + o',pela:'por + a',ao:'a + o','à':'a + a',num:'em + um',numa:'em + uma'};
+const CROSS = {'pron.rel':['conj.int'],'conj.int':['pron.rel'],'art.def':['prep.s','pron.obl'],'prep.s':['art.def'],'pron.obl':['art.def','pron.dem'],'pron.dem':['art.def','pron.obl'],
+  'art.ind':['num.card'],'num.card':['art.ind'],'adv.int':['pron.ind','num.frac'],'pron.ind':['adv.int'],'num.frac':['adv.int'],'conj.comp':['conj.conf'],'conj.conf':['conj.comp','prep.s'],
+  'conj.caus':['conj.expl'],'conj.expl':['conj.caus','pron.rel'],'conj.cond':['conj.int','pron.obl'],'adv.mod':['adj','conj.comp'],'adv.tem':['conj.concl'],'conj.concl':['adv.tem'],'pron.int':['pron.rel','adv.int'],'prep.c':['art.def']};
+const DEF_CROSS = {sub:['adj'],v:['sub'],art:['pron.dem'],pron:['art.def'],adv:['adj'],num:['art.ind'],prep:['conj.int'],conj:['pron.rel']};
+const LEVELS = [null,
+  {n:'O básico',d:'Substantivo, verbo, adjetivo e artigo'},
+  {n:'As 10 classes',d:'Todas as classes gramaticais'},
+  {n:'Substantivos e verbos',d:'Próprio/comum, concreto/abstrato, coletivo; verbo principal, de ligação e auxiliar'},
+  {n:'Pronomes e artigos',d:'Pessoal reto/oblíquo, possessivo, demonstrativo, indefinido, relativo, interrogativo'},
+  {n:'Advérbios e conjunções',d:'Circunstâncias dos advérbios e tipos de conjunção, numerais e contrações'},
+  {n:'Casos ambíguos',d:'Palavras que mudam de classe: que, se, como, a, o, bem, meio, mesmo, muito, segundo'},
+  {n:'Árvore completa',d:'Classe → tipo → subtipo, sempre escolhendo entre TODAS as opções possíveis'},
+  {n:'Árvore + ambíguos',d:'Árvore completa com prioridade para palavras que mudam de classe'},
+  {n:'Árvore sem cores',d:'Opções sem cor: as cores só aparecem depois da resposta'},
+  {n:'Mestre',d:'Sem cores, opções embaralhadas, sem dica e com casos ambíguos'},
+  {n:'Escrita',d:'Classificações na etapa 3+ de domínio devem ser escritas por extenso; as demais, árvore sem cores'},
+  {n:'Escrita mestre',d:'Escrita já a partir da etapa 2 de domínio; as demais no modo Mestre (embaralhado, sem dica, ambíguos)'}
+];
+const MAXL=LEVELS.length-1;
+/* Árvore de classificação (níveis 7+): em cada etapa aparecem todas as opções possíveis daquele ramo */
+const CH={
+  'sub':['próprio','comum'], 'sub>comum':['concreto','abstrato','concreto coletivo'],
+  'art':['definido','indefinido'],
+  'num':['cardinal','ordinal','multiplicativo','fracionário'],
+  'pron':['pessoal','de tratamento','possessivo','demonstrativo','indefinido','relativo','interrogativo'],
+  'pron>pessoal':['do caso reto','do caso oblíquo'],
+  'v':['principal','de ligação','auxiliar'],
+  'adv':['de tempo','de lugar','de modo','de intensidade','de negação','de afirmação','de dúvida'],
+  'prep':['simples','contração (prep. + artigo)'],
+  'conj':['coordenativa','subordinativa'],
+  'conj>coordenativa':['aditiva','adversativa','alternativa','conclusiva','explicativa'],
+  'conj>subordinativa':['integrante','causal','temporal','condicional','concessiva','final','comparativa','consecutiva','conformativa','proporcional']
+};
+const PATH={'sub':['sub','comum'],'sub.pr':['sub','próprio'],'sub.cc':['sub','comum','concreto'],'sub.ca':['sub','comum','abstrato'],'sub.col':['sub','comum','concreto coletivo'],
+  'art.def':['art','definido'],'art.ind':['art','indefinido'],'adj':['adj'],'interj':['interj'],
+  'pron.reto':['pron','pessoal','do caso reto'],'pron.obl':['pron','pessoal','do caso oblíquo'],'pron.trat':['pron','de tratamento'],'pron.pos':['pron','possessivo'],
+  'pron.dem':['pron','demonstrativo'],'pron.ind':['pron','indefinido'],'pron.rel':['pron','relativo'],'pron.int':['pron','interrogativo'],
+  'v.pri':['v','principal'],'v.lig':['v','de ligação'],'v.aux':['v','auxiliar'],'prep.s':['prep','simples'],'prep.c':['prep','contração (prep. + artigo)']};
+{const N={card:'cardinal',ord:'ordinal',mult:'multiplicativo',frac:'fracionário'};for(const k in N)PATH['num.'+k]=['num',N[k]];
+ const A={tem:'de tempo',lug:'de lugar',mod:'de modo',int:'de intensidade',neg:'de negação',afi:'de afirmação',duv:'de dúvida'};for(const k in A)PATH['adv.'+k]=['adv',A[k]];
+ const C={adi:'aditiva',adv:'adversativa',alt:'alternativa',concl:'conclusiva',expl:'explicativa'};for(const k in C)PATH['conj.'+k]=['conj','coordenativa',C[k]];
+ const U={int:'integrante',caus:'causal',temp:'temporal',cond:'condicional',conc:'concessiva',fin:'final',comp:'comparativa',cons:'consecutiva',conf:'conformativa',prop:'proporcional'};for(const k in U)PATH['conj.'+k]=['conj','subordinativa',U[k]];}
+const cap=w=>w.charAt(0).toUpperCase()+w.slice(1);
+const stepLabel=(v,i)=>i===0?CL[v].n:cap(v);
+const pathLabel=arr=>arr.map((v,i)=>stepLabel(v,i)).join(' › ');
+const TRICKY = new Set(['que','se','como','a','o','bem','meio','mesmo','muito','um','segundo','conforme','quanto','logo','alto','rápido','trabalho','jantar','caso','anda','ficamos','está']);
+
+const cls = t => t.split('.')[0];
+const subOf = t => t.split('.')[1];
+const fullLabel = t => { const c=CL[cls(t)], s=subOf(t); return s ? c.n+' '+c.subs[s] : c.n; };
+const shortLabel = (t,lv) => { const c=cls(t), s=subOf(t); if(lv<3||!s) return CL[c].n.toLowerCase(); return SHORT[c]+' '+CL[c].subs[s]; };
+
+function hsl2rgb(h,s,l){s/=100;l/=100;const k=n=>(n+h/30)%12,a=s*Math.min(l,1-l),f=n=>l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1)));return[f(0),f(8),f(4)];}
+function lum(rgb){const c=rgb.map(v=>v<=.03928?v/12.92:((v+.055)/1.055)**2.4);return .2126*c[0]+.7152*c[1]+.0722*c[2];}
+function color(t, tone){
+  const c=CL[cls(t)], s=subOf(t); let l=c.l;
+  if(tone && s){const keys=Object.keys(c.subs),i=keys.indexOf(s),n=keys.length;l=c.l-15+(n>1?30*i/(n-1):0);}
+  const bg=`hsl(${c.h} ${c.s}% ${l}%)`, fg=lum(hsl2rgb(c.h,c.s,l))>.36?'#16161a':'#fff';
+  return {bg,fg};
+}
+
+/* ================= BANCO DE FRASES (anotado) =================
+   palavra|classe.subclasse|nota_opcional  (_ = espaço) */
+const BANK = `
+O|art.def menino|sub.cc comeu|v.pri a|art.def maçã|sub.cc vermelha|adj .
+Maria|sub.pr comprou|v.pri um|art.ind vestido|sub.cc azul|adj .
+Os|art.def alunos|sub.cc fizeram|v.pri a|art.def prova|sub ontem|adv.tem .
+A|art.def casa|sub.cc nova|adj é|v.lig muito|adv.int bonita|adj .
+Meu|pron.pos gato|sub.cc dorme|v.pri no|prep.c sofá|sub.cc .
+Eu|pron.reto gosto|v.pri de|prep.s café|sub.cc quente|adj .
+Ela|pron.reto está|v.lig cansada|adj hoje|adv.tem .
+Nós|pron.reto chegamos|v.pri cedo|adv.tem à|prep.c escola|sub.cc .
+O|art.def cardume|sub.col nadava|v.pri rapidamente|adv.mod no|prep.c rio|sub.cc .
+João|sub.pr e|conj.adi Pedro|sub.pr jogaram|v.pri bola|sub.cc na|prep.c rua|sub.cc .
+A|art.def professora|sub.cc explicou|v.pri a|art.def lição|sub com|prep.s paciência|sub.ca .
+Ontem|adv.tem choveu|v.pri muito|adv.int em|prep.s Recife|sub.pr .
+Aquele|pron.dem livro|sub.cc antigo|adj pertence|v.pri ao|prep.c meu|pron.pos avô|sub.cc .
+Eu|pron.reto não|adv.neg encontrei|v.pri minhas|pron.pos chaves|sub.cc .
+Ufa|interj ! Nós|pron.reto terminamos|v.pri o|art.def trabalho|sub !
+A|art.def saudade|sub.ca dói|v.pri muito|adv.int .
+O|art.def rebanho|sub.col atravessou|v.pri a|art.def estrada|sub.cc devagar|adv.mod .
+Três|num.card meninas|sub.cc cantaram|v.pri uma|art.ind música|sub alegre|adj .
+Ele|pron.reto chegou|v.pri em|prep.s primeiro|num.ord lugar|sub .
+A|art.def turma|sub.col ficou|v.lig feliz|adj com|prep.s a|art.def notícia|sub .
+Você|pron.trat quer|v.pri um|art.ind pedaço|sub de|prep.s bolo|sub.cc ?
+Talvez|adv.duv eles|pron.reto venham|v.pri amanhã|adv.tem .
+Sim|adv.afi , eu|pron.reto aceito|v.pri o|art.def convite|sub .
+A|art.def criança|sub.cc sorriu|v.pri , mas|conj.adv não|adv.neg disse|v.pri nada|pron.ind .
+Estude|v.pri ou|conj.alt você|pron.trat não|adv.neg vai|v.aux passar|v.pri .
+Choveu|v.pri muito|adv.int , portanto|conj.concl o|art.def jogo|sub foi|v.aux|voz_passiva:_'foi'_ajuda_'cancelado' cancelado|v.pri .
+Leve|v.pri o|art.def guarda-chuva|sub.cc , pois|conj.expl vai|v.aux chover|v.pri .
+Eu|pron.reto sei|v.pri que|conj.int|inicia_a_oração_que_completa_'sei';_não_dá_para_trocar_por_'o_qual' você|pron.trat estudou|v.pri .
+O|art.def livro|sub.cc que|pron.rel|retoma_'livro'_(=_o_qual) comprei|v.pri é|v.lig ótimo|adj .
+Quando|conj.temp o|art.def sol|sub.cc nasceu|v.pri , saímos|v.pri .
+Se|conj.cond|introduz_uma_condição_(=_caso) chover|v.pri , ficaremos|v.pri em|prep.s casa|sub.cc .
+Ela|pron.reto se|pron.obl|pronome_reflexivo:_ela_penteou_a_si_mesma penteou|v.pri rapidamente|adv.mod .
+Embora|conj.conc estivesse|v.lig cansado|adj , ele|pron.reto trabalhou|v.pri .
+Estudei|v.pri para_que|conj.fin|locução_conjuntiva_final_(indica_finalidade) meus|pron.pos pais|sub.cc ficassem|v.lig orgulhosos|adj .
+Ele|pron.reto é|v.lig mais|adv.int alto|adj que|conj.comp|compara:_mais_alto_(do)_que o|art.def irmão|sub.cc .
+Ela|pron.reto estava|v.lig tão|adv.int cansada|adj que|conj.cons|indica_a_consequência_de_'tão_cansada' dormiu|v.pri cedo|adv.tem .
+Fiz|v.pri o|art.def bolo|sub.cc conforme|conj.conf|=_como:_indica_conformidade a|art.def receita|sub mandava|v.pri .
+À_medida_que|conj.prop|locução_proporcional:_uma_ação_cresce_junto_com_a_outra estudava|v.pri , aprendia|v.pri mais|adv.int .
+Como|conj.caus|no_início_da_frase,_=_porque/já_que estava|v.lig doente|adj , não|adv.neg fui|v.pri à|prep.c festa|sub .
+Ele|pron.reto canta|v.pri como|conj.comp|compara:_=_do_mesmo_jeito_que um|art.ind passarinho|sub.cc .
+Como|adv.mod|advérbio_interrogativo_de_modo:_pergunta_'de_que_jeito?' você|pron.trat resolveu|v.pri isso|pron.dem ?
+Quem|pron.int quebrou|v.pri a|art.def janela|sub.cc ?
+Qual|pron.int caminho|sub você|pron.trat prefere|v.pri ?
+Que|adv.int|em_exclamação_intensifica_o_adjetivo_(=_quão) lindo|adj dia|sub !
+Eu|pron.reto a|pron.obl|substitui_um_substantivo_feminino_e_acompanha_o_verbo:_'vi_Ana'_→_'a_vi' vi|v.pri ontem|adv.tem no|prep.c mercado|sub.cc .
+Fomos|v.pri a|prep.s|liga_'fomos'_a_'Lisboa';_não_há_substantivo_comum_feminino_depois Lisboa|sub.pr de|prep.s trem|sub.cc .
+Ele|pron.reto canta|v.pri bem|adv.mod|modifica_o_verbo:_canta_como?_bem .
+Acordei|v.pri bem|adv.int|intensifica_'cedo'_(=_muito) cedo|adv.tem hoje|adv.tem .
+O|art.def bem|sub.ca|com_artigo_antes,_vira_substantivo_(substantivação) sempre|adv.tem vence|v.pri .
+Comprei|v.pri meio|num.frac|=_metade_de_um_quilo;_acompanha_substantivo quilo|sub de|prep.s carne|sub.cc .
+Ela|pron.reto ficou|v.lig meio|adv.int|=_um_pouco;_modifica_o_adjetivo_e_não_varia triste|adj .
+Ele|pron.reto mesmo|pron.dem|reforça_'ele'_(=_próprio):_pronome_demonstrativo consertou|v.pri o|art.def carro|sub.cc .
+Eu|pron.reto pedi|v.pri um|num.card|indica_quantidade_exata:_um,_e_não_dois pastel|sub.cc , não|adv.neg dois|num.card .
+Muitos|pron.ind|acompanha_substantivo_e_varia_(muitos/muitas) alunos|sub.cc faltaram|v.pri hoje|adv.tem .
+O|pron.dem|=_aquilo;_não_acompanha_substantivo que|pron.rel|retoma_'o'_(aquilo_que) você|pron.trat disse|v.pri é|v.lig verdade|sub.ca .
+Eu|pron.reto não|adv.neg sei|v.pri se|conj.int|inicia_a_oração_que_completa_'sei'_(dúvida) ela|pron.reto vem|v.pri .
+Segundo|conj.conf|=_conforme;_inicia_uma_oração_(tem_verbo:_informou) o|art.def jornal|sub.cc informou|v.pri , a|art.def ponte|sub.cc fechou|v.pri .
+Ele|pron.reto chegou|v.pri em|prep.s segundo|num.ord|indica_posição:_numeral_ordinal lugar|sub .
+Segundo|prep.s|=_de_acordo_com;_vem_antes_de_um_substantivo,_sem_verbo_na_sequência a|art.def previsão|sub , vai|v.aux chover|v.pri .
+A|art.def multidão|sub.col aplaudiu|v.pri o|art.def cantor|sub.cc .
+Nossa|interj ! Você|pron.trat cresceu|v.pri muito|adv.int !
+O|art.def enxame|sub.col atacou|v.pri o|art.def menino|sub.cc .
+A|art.def alcateia|sub.col uivava|v.pri à|prep.c noite|sub .
+A|art.def frota|sub.col partiu|v.pri do|prep.c porto|sub.cc .
+Ana|sub.pr comeu|v.pri metade|num.frac do|prep.c bolo|sub.cc .
+Paguei|v.pri o|art.def dobro|num.mult do|prep.c preço|sub .
+Ela|pron.reto mora|v.pri no|prep.c terceiro|num.ord andar|sub.cc .
+Ele|pron.reto leu|v.pri dez|num.card páginas|sub.cc do|prep.c livro|sub.cc .
+Todos|pron.ind gostaram|v.pri da|prep.c festa|sub .
+Ninguém|pron.ind saiu|v.pri da|prep.c sala|sub.cc .
+Alguém|pron.ind deixou|v.pri isto|pron.dem aqui|adv.lug .
+Este|pron.dem caderno|sub.cc é|v.lig seu|pron.pos ?
+Nosso|pron.pos time|sub venceu|v.pri o|art.def campeonato|sub .
+A|art.def menina|sub.cc , cuja|pron.rel|relativo_de_posse:_a_mãe_da_menina mãe|sub.cc viajou|v.pri , chorou|v.pri .
+Eu|pron.reto lhe|pron.obl entreguei|v.pri a|art.def carta|sub.cc .
+Ela|pron.reto me|pron.obl ajudou|v.pri com|prep.s a|art.def tarefa|sub .
+Ele|pron.reto falou|v.pri comigo|pron.obl ontem|adv.tem .
+Esse|pron.dem presente|sub.cc é|v.lig para|prep.s mim|pron.obl ?
+Eles|pron.reto estavam|v.aux estudando|v.pri na|prep.c biblioteca|sub.cc .
+Nós|pron.reto tínhamos|v.aux saído|v.pri quando|conj.temp ela|pron.reto ligou|v.pri .
+A|art.def porta|sub.cc foi|v.aux aberta|v.pri|particípio_na_voz_passiva:_verbo_principal pelo|prep.c porteiro|sub.cc .
+O|art.def céu|sub.cc parece|v.lig escuro|adj hoje|adv.tem .
+A|art.def água|sub.cc permaneceu|v.lig fria|adj .
+O|art.def cachorro|sub.cc continua|v.lig doente|adj .
+Lá|adv.lug a|art.def vista|sub é|v.lig linda|adj .
+Os|art.def pássaros|sub.cc voaram|v.pri longe|adv.lug .
+Ele|pron.reto falou|v.pri alto|adv.mod|modifica_o_verbo_'falou'_e_não_varia:_adjetivo_virou_advérbio na|prep.c reunião|sub .
+O|art.def prédio|sub.cc alto|adj|caracteriza_'prédio'_e_varia_(prédios_altos) fica|v.pri no|prep.c centro|sub .
+Ela|pron.reto correu|v.pri rápido|adv.mod|modifica_'correu';_não_varia_(eles_correram_rápido) para|prep.s casa|sub.cc .
+O|art.def carro|sub.cc rápido|adj|caracteriza_'carro'_e_varia_(carros_rápidos) passou|v.pri .
+Oba|interj ! Ganhamos|v.pri o|art.def jogo|sub !
+Ai|interj ! Machuquei|v.pri o|art.def pé|sub.cc .
+Psiu|interj ! O|art.def bebê|sub.cc está|v.aux dormindo|v.pri .
+Viva|interj ! O|art.def time|sub voltou|v.pri !
+Eles|pron.reto sempre|adv.tem almoçam|v.pri aqui|adv.lug .
+Certamente|adv.afi ela|pron.reto virá|v.pri .
+Provavelmente|adv.duv o|art.def voo|sub vai|v.aux atrasar|v.pri .
+Ele|pron.reto andou|v.pri devagar|adv.mod pela|prep.c calçada|sub.cc .
+Ela|pron.reto é|v.lig bastante|adv.int inteligente|adj .
+Comi|v.pri pouco|adv.int hoje|adv.tem .
+Há|v.pri|haver_=_existir:_verbo_principal muitas|pron.ind flores|sub.cc no|prep.c jardim|sub.cc .
+A|art.def orquestra|sub.col tocou|v.pri uma|art.ind valsa|sub .
+O|art.def arquipélago|sub.col fica|v.pri no|prep.c oceano|sub.cc .
+A|art.def matilha|sub.col perseguiu|v.pri a|art.def raposa|sub.cc .
+O|art.def pomar|sub.col está|v.lig florido|adj .
+A|art.def esquadrilha|sub.col cruzou|v.pri o|art.def céu|sub.cc .
+Um|art.ind bando|sub.col de|prep.s pássaros|sub.cc pousou|v.pri na|prep.c árvore|sub.cc .
+O|art.def Brasil|sub.pr é|v.lig enorme|adj .
+O|art.def rio|sub.cc Amazonas|sub.pr é|v.lig imenso|adj .
+Paulo|sub.pr viajou|v.pri para|prep.s Lisboa|sub.pr .
+A|art.def beleza|sub.ca da|prep.c paisagem|sub impressionou|v.pri os|art.def turistas|sub.cc .
+O|art.def medo|sub.ca paralisou|v.pri o|art.def soldado|sub.cc .
+A|art.def amizade|sub.ca é|v.lig preciosa|adj .
+A|art.def coragem|sub.ca do|prep.c bombeiro|sub.cc salvou|v.pri a|art.def família|sub .
+Eu|pron.reto tenho|v.pri muita|pron.ind|acompanha_'fome'_e_varia:_pronome_indefinido fome|sub.ca .
+O|art.def amor|sub.ca transforma|v.pri as|art.def pessoas|sub.cc .
+A|art.def viagem|sub.ca|nomeia_uma_ação_(viajar):_abstrato foi|v.lig cansativa|adj .
+A|art.def alegria|sub.ca das|prep.c crianças|sub.cc contagiou|v.pri todos|pron.ind .
+Eu|pron.reto estudo|v.pri e|conj.adi trabalho|v.pri|aqui_é_verbo:_'eu_trabalho' .
+O|art.def trabalho|sub|com_artigo_antes_é_substantivo dignifica|v.pri o|art.def homem|sub.cc .
+O|art.def jantar|sub|com_artigo,_o_verbo_vira_substantivo_(substantivação) está|v.lig pronto|adj .
+Gosto|v.pri de|prep.s jantar|v.pri|infinitivo_indicando_ação:_verbo cedo|adv.tem .
+Ele|pron.reto não|adv.neg estudou|v.pri nem|conj.adi|=_e_não:_soma_ideias_negativas descansou|v.pri .
+Ora|conj.alt chora|v.pri , ora|conj.alt ri|v.pri .
+Ele|pron.reto é|v.lig rico|adj , porém|conj.adv vive|v.pri modestamente|adv.mod .
+Penso|v.pri , logo|conj.concl|=_portanto:_liga_orações_e_conclui existo|v.pri .
+Ela|pron.reto chegará|v.pri logo|adv.tem|=_em_breve:_aqui_indica_tempo .
+Volte|v.pri cedo|adv.tem , que|conj.expl|=_pois:_explica_o_pedido a|art.def estrada|sub.cc é|v.lig perigosa|adj .
+Ele|pron.reto faltou|v.pri porque|conj.caus|indica_a_causa_real_da_falta estava|v.lig doente|adj .
+Já_que|conj.caus|locução_causal_(=_visto_que) você|pron.trat chegou|v.pri , podemos|v.aux começar|v.pri .
+Assim_que|conj.temp|locução_temporal_(=_logo_que) acordou|v.pri , ela|pron.reto tomou|v.pri café|sub.cc .
+Enquanto|conj.temp eu|pron.reto cozinho|v.pri , você|pron.trat arruma|v.pri a|art.def mesa|sub.cc .
+Caso|conj.cond|=_se:_introduz_condição você|pron.trat precise|v.pri , ligue|v.pri para|prep.s mim|pron.obl .
+O|art.def caso|sub|com_artigo:_substantivo_(=_acontecimento) foi|v.aux resolvido|v.pri pela|prep.c polícia|sub .
+Ainda_que|conj.conc|locução_concessiva_(=_embora) chova|v.pri , iremos|v.pri ao|prep.c parque|sub.cc .
+Saímos|v.pri cedo|adv.tem a_fim_de_que|conj.fin|locução_final_(=_para_que) chegássemos|v.pri antes|adv.tem .
+Ela|pron.reto falou|v.pri tanto|adv.int que|conj.cons|consequência_de_'falou_tanto' ficou|v.lig rouca|adj .
+Ele|pron.reto é|v.lig tão|adv.int forte|adj quanto|conj.comp|'tão..._quanto':_comparação_de_igualdade o|art.def pai|sub.cc .
+Fiz|v.pri tudo|pron.ind como|conj.conf|=_conforme:_do_jeito_que_foi_pedido o|art.def chefe|sub.cc pediu|v.pri .
+Ela|pron.reto estuda|v.pri muito|adv.int|modifica_o_verbo_'estuda'_e_não_varia .
+A|art.def menina|sub.cc tem|v.pri muitas|pron.ind|acompanha_substantivo_e_varia:_pronome_indefinido bonecas|sub.cc .
+Vi|v.pri um|art.ind|indefinido:_um_filme_qualquer,_não_conta_quantidade filme|sub ótimo|adj ontem|adv.tem .
+A|art.def aluna|sub.cc trouxe|v.pri o|art.def seu|pron.pos caderno|sub.cc .
+Onde|adv.lug|advérbio_interrogativo_de_lugar você|pron.trat mora|v.pri ?
+Quando|adv.tem|advérbio_interrogativo_de_tempo_(numa_pergunta) começa|v.pri a|art.def aula|sub ?
+Qual|pron.int é|v.lig o|art.def seu|pron.pos nome|sub ?
+Quantos|pron.int irmãos|sub.cc você|pron.trat tem|v.pri ?
+Isso|pron.dem não|adv.neg é|v.lig justo|adj .
+Aquela|pron.dem casa|sub.cc amarela|adj é|v.lig minha|pron.pos .
+Cada|pron.ind aluno|sub.cc recebeu|v.pri um|art.ind livro|sub.cc .
+Nenhum|pron.ind passageiro|sub.cc reclamou|v.pri do|prep.c atraso|sub .
+Algumas|pron.ind pessoas|sub.cc chegaram|v.pri atrasadas|adj .
+Outro|pron.ind dia|sub voltaremos|v.pri aqui|adv.lug .
+Os|art.def dois|num.card irmãos|sub.cc brigaram|v.pri ontem|adv.tem .
+O|art.def triplo|num.mult de|prep.s três|num.card é|v.lig nove|num.card .
+A|art.def metade|num.frac|mesmo_com_artigo,_indica_fração:_numeral_fracionário da|prep.c turma|sub.col faltou|v.pri .
+A|art.def secretária|sub.cc digitou|v.pri a|art.def carta|sub.cc rapidamente|adv.mod .
+Os|art.def meninos|sub.cc brincavam|v.pri no|prep.c quintal|sub.cc enquanto|conj.temp chovia|v.pri .
+Ela|pron.reto comprou|v.pri pão|sub.cc e|conj.adi leite|sub.cc na|prep.c padaria|sub.cc .
+Meu|pron.pos irmão|sub.cc parece|v.lig preocupado|adj .
+A|art.def lua|sub.cc brilhava|v.pri sobre|prep.s o|art.def mar|sub.cc .
+Coloquei|v.pri o|art.def livro|sub.cc sob|prep.s a|art.def mesa|sub.cc .
+Ele|pron.reto saiu|v.pri sem|prep.s casaco|sub.cc .
+Caminhamos|v.pri até|prep.s a|art.def praia|sub.cc .
+O|art.def vaso|sub.cc caiu|v.pri da|prep.c janela|sub.cc .
+Ana|sub.pr estava|v.aux lendo|v.pri quando|conj.temp o|art.def telefone|sub.cc tocou|v.pri .
+Eles|pron.reto vão|v.aux viajar|v.pri nas|prep.c férias|sub .
+Pode|v.aux entrar|v.pri , a|art.def porta|sub.cc está|v.lig aberta|adj .
+Ela|pron.reto deve|v.aux chegar|v.pri logo|adv.tem .
+Hoje|adv.tem o|art.def mar|sub.cc está|v.lig calmo|adj .
+Os|art.def turistas|sub.cc visitaram|v.pri museus|sub.cc antigos|adj .
+Que|pron.int|interrogativo_junto_de_substantivo_(=_qual) livro|sub.cc você|pron.trat está|v.aux lendo|v.pri ?
+O|art.def aluno|sub.cc que|pron.rel|retoma_'aluno'_(=_o_qual) estudou|v.pri passou|v.pri .
+Espero|v.pri que|conj.int|inicia_a_oração_que_completa_'espero' você|pron.trat melhore|v.pri .
+Ela|pron.reto disse|v.pri que|conj.int viria|v.pri .
+Eu|pron.reto o|pron.obl|=_ele;_vem_junto_do_verbo,_não_de_substantivo conheço|v.pri desde|prep.s criança|sub.cc .
+Ela|pron.reto comprou|v.pri a|art.def bolsa|sub.cc e|conj.adi a|pron.obl|retoma_'bolsa'_e_acompanha_o_verbo,_não_um_substantivo usou|v.pri ontem|adv.tem .
+Entreguei|v.pri o|art.def livro|sub.cc à|prep.c|crase:_a_(preposição)_+_a_(artigo) professora|sub.cc .
+O|art.def mesmo|pron.dem|=_idêntico:_pronome_demonstrativo erro|sub aconteceu|v.pri ontem|adv.tem .
+O|art.def menino|sub.cc estava|v.lig meio|adv.int|=_um_pouco:_modifica_o_adjetivo assustado|adj .
+Ele|pron.reto comeu|v.pri meia|num.frac|=_metade_de_uma_pizza pizza|sub.cc sozinho|adj .
+Ficamos|v.pri|=_permanecer_num_lugar:_não_liga_o_sujeito_a_uma_característica no|prep.c meio|sub|com_artigo_(no_=_em_+_o):_substantivo da|prep.c sala|sub.cc .
+Ela|pron.reto ficou|v.lig|liga_'ela'_à_característica_'nervosa' nervosa|adj .
+A|art.def professora|sub.cc anda|v.lig|=_está:_liga_o_sujeito_a_'cansada' cansada|adj .
+Ela|pron.reto anda|v.pri|aqui_indica_ação_(caminhar) pelo|prep.c parque|sub.cc todas|pron.ind as|art.def manhãs|sub .
+Ele|pron.reto é|v.lig médico|sub.cc|nomeia_uma_profissão:_substantivo .
+Ela|pron.reto está|v.pri|=_encontra-se_num_lugar:_não_liga_a_característica em|prep.s casa|sub.cc .
+O|art.def primeiro|num.ord aluno|sub.cc chegou|v.pri cedo|adv.tem .
+Carla|sub.pr leu|v.pri o|art.def jornal|sub.cc na|prep.c varanda|sub.cc .
+O|art.def cachorro|sub.cc latiu|v.pri alto|adv.mod .
+Minha|pron.pos avó|sub.cc faz|v.pri um|art.ind bolo|sub.cc delicioso|adj .
+As|art.def crianças|sub.cc correm|v.pri no|prep.c parque|sub.cc .
+O|art.def sol|sub.cc está|v.lig forte|adj hoje|adv.tem .
+Pedro|sub.pr abriu|v.pri a|art.def janela|sub.cc devagar|adv.mod .
+`;
+
+const PUNCT = /^[.,!?;:]$/;
+const SENT = [];
+BANK.trim().split('\n').forEach((line,idx)=>{
+  const toks=line.trim().split(/\s+/); const out=[]; let ok=true;
+  for(const tk of toks){
+    if(PUNCT.test(tk)){out.push({p:tk});continue;}
+    const [w,t,nt]=tk.split('|');
+    if(!t||!CL[cls(t)]||(subOf(t)&&!CL[cls(t)].subs[subOf(t)])){ok=false;break;}
+    out.push({w:w.replace(/_/g,' '),t,nt:nt?nt.replace(/_/g,' '):''});
+  }
+  if(ok&&out.length) { const words=out.filter(x=>x.w); SENT.push({id:idx,toks:out,tricky:words.some(x=>x.nt||TRICKY.has(x.w.toLowerCase())),len:words.length}); }
+});
+
+/* ================= ESTADO ================= */
+const KEY='classesGramaticais.v1', HKEY='classesGramaticais.hist.v1';
+const fresh=()=>({mv:2,mast:{},skipM:true,level:1,order:'verbo',score:0,streak:0,best:0,ans:0,ok:0,sents:0,win:[],per:{},errW:{},errT:{},recent:[]});
+let S=fresh();
+let needRebuild=false;
+try{const raw=localStorage.getItem(KEY);if(raw){const o=JSON.parse(raw);needRebuild=!(o.mv>=2); if(needRebuild) o.mast={};S=Object.assign(fresh(),o);}}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}};
+/* Histórico completo: e = [data, idFrase, palavra, tagCorreta, resposta, acerto, nível, modo, dica]; t = textos das frases */
+let H={e:[],t:{}};
+try{const raw=localStorage.getItem(HKEY);if(raw)H=Object.assign({e:[],t:{}},JSON.parse(raw));}catch(e){}
+let hWarned=false;
+const saveH=()=>{try{localStorage.setItem(HKEY,JSON.stringify(H));}catch(e){ if(!hWarned){hWarned=true;toast('Memória do navegador cheia: copie o histórico (Estatísticas) para não perder respostas.');} }};
+
+/* ===== Domínio por etapas: acertos seguidos rendem "folgas" (vezes em que a pergunta é pulada).
+   Cada etapa pede menos acertos e dá folgas maiores. Um erro volta tudo ao início. ===== */
+const STG=[{need:5,skip:5},{need:3,skip:10},{need:2,skip:20},{need:1,skip:40},{need:1,skip:80},{need:1,skip:160}];
+const STALE_DAYS=5; // se ficar mais que isso sem responder, a folga acaba e a pergunta volta para conferir
+const mkey=(t,mode)=>mode==='main'?'C:'+cls(t):mode==='sub'?'T:'+t:mode==='arvore'||mode==='tree'||mode==='escrita'?'A:'+t:null;
+const mLabel=k=>{const [p,t]=k.split(':');return p==='C'?CL[t].n+' (classe)':p==='T'?fullLabel(t):pathLabel(PATH[t]);};
+const mModeName={C:'classe',T:'classe + subclasse',A:'árvore completa'};
+const mGet=k=>S.mast[k]||(S.mast[k]={st:0,c:0,sk:0,t:0});
+/* decide se esta ocorrência é pulada (consome uma folga) */
+function mSkipNow(k){ const m=S.mast[k]; if(!m||m.sk<=0) return false;
+  if(m.t&&(Date.now()-m.t)/864e5>STALE_DAYS){ m.sk=0; return false; }
+  m.sk--; return true; }
+const mIsVerify=k=>{const m=S.mast[k];return !!(m&&m.st>0&&m.sk<=0);};
+const mFree=k=>{const m=S.mast[k];return !!(m&&m.sk>0);};
+function bumpMast(k,right,live){ if(!k) return null; const m=mGet(k); m.t=Date.now();
+  if(!right){ const lost=m.st>0||m.c>0; m.st=0;m.c=0;m.sk=0; return lost&&live?{reset:true}:null; }
+  m.c++; const g=STG[m.st];
+  if(m.c>=g.need){ m.sk=g.skip; m.c=0; const was=m.st; m.st=Math.min(m.st+1,STG.length-1); return live?{gain:g.skip,stage:was}:null; }
+  return null; }
+if(needRebuild){ for(const r of H.e){ if(r[5]&&r[8]) continue; const k=mkey(r[3],r[7]); if(k){ bumpMast(k,!!r[5],false); S.mast[k].t=r[0]; } } }
+
+let cur=null, qi=-1, queue=[], waiting=false, hintUsed=false, endTimer=null, phase='q', marks=new Set();
+const $=id=>document.getElementById(id);
+
+function scope(t,lv){
+  const c=cls(t), hasSub=!!subOf(t);
+  if(lv>=7) return 'tree';
+  if(lv===1) return ['sub','v','adj','art'].includes(c)?'main':'skip';
+  if(lv===2) return 'main';
+  const subCls = lv===3?['sub','v']:lv===4?['sub','v','pron','art']:['sub','v','pron','art','adv','conj','num','prep'];
+  return hasSub&&subCls.includes(c)?'sub':'main';
+}
+
+function pickSentence(){
+  const lv=S.level, recent=new Set(S.recent);
+  let pool=SENT.filter(s=>!recent.has(s.id)); if(pool.length<5) pool=SENT.slice();
+  const ws=pool.map(s=>{
+    let w=1;
+    for(const x of s.toks){ if(!x.w) continue; const sc=scope(x.t,lv); if(sc==='skip') continue;
+      w+= (S.errW[x.w.toLowerCase()+'|'+x.t]||0)*1.5 + (S.errT[sc==='main'?cls(x.t):x.t]||0)*.4; }
+    if(S.skipM){ let un=0,tot=0; for(const x of s.toks){ if(!x.w) continue; const sc=scope(x.t,lv); if(sc==='skip') continue; tot++; if(!mFree(mkey(x.t,sc))) un++; }
+      w*= tot&&!un ? .15 : 1+.3*un; }
+    if([6,8,10,12].includes(lv)&&s.tricky) w*=4;
+    if(lv<=2&&s.len>8) w*=.5;
+    if(lv===1&&s.toks.some(x=>x.w&&['interj'].includes(cls(x.t)))) w*=.5;
+    return w;
+  });
+  let r=Math.random()*ws.reduce((a,b)=>a+b,0);
+  for(let i=0;i<pool.length;i++){r-=ws[i];if(r<=0)return pool[i];}
+  return pool[pool.length-1];
+}
+
+const sentText=c=>c.toks.map(x=>x.w||x.p).join(' ').replace(/ ([.,!?;:])/g,'$1');
+
+/* ================= RENDER ================= */
+function renderSentence(){
+  const lv=S.level; let n=0;
+  $('sent').innerHTML=cur.toks.map((x,i)=>{
+    if(!x.w) return `<span class="p">${x.p}</span>`;
+    let st='',lab='',cl='w',attr='';
+    if(x.rev){const c=color(x.t,lv>=3);st=`background:${c.bg};color:${c.fg}`;lab=(x.mast?'★ ':'')+shortLabel(x.t,lv);}
+    else if(x.vmark){const c=color('v',false);st=`background:${c.bg};color:${c.fg}`;lab='verbo';}
+    if(x.skip) cl+=' skip'; else if(!x.rev&&!x.vmark) cl+=' pend';
+    if(phase==='mark'&&!x.rev){ n++; cl+=' mk'+(marks.has(i)?' sel':''); attr=` data-i="${i}" data-n="${n}" role="button" tabindex="0" aria-pressed="${marks.has(i)}"`; lab=n<=10?String(n%10):''; }
+    if(i===queue[qi]&&phase==='q') cl+=' cur';
+    if(x.miss) cl+=' wrong';
+    return `<span class="${cl}"${attr}><span class="t" style="${st}">${x.w}</span><span class="lab">${lab}</span></span>`;
+  }).join('');
+}
+
+function optionsFor(t,mode){
+  if(mode==='main') return (S.level===1?['sub','art','adj','v']:ORDER).slice();
+  const c=cls(t), all=Object.keys(CL[c].subs).map(k=>c+'.'+k);
+  let set=new Set([t]);
+  const same=all.filter(x=>x!==t), cross=(CROSS[t]||DEF_CROSS[c]||[]).filter(x=>x!==t);
+  if(all.length<=6) same.forEach(x=>set.add(x));
+  else { const conf=cross.filter(x=>cls(x)===c); conf.forEach(x=>set.add(x));
+    const sh=same.sort(()=>Math.random()-.5); for(const x of sh){if(set.size>=6)break;set.add(x);} }
+  cross.filter(x=>cls(x)!==c).slice(0,2).forEach(x=>set.add(x));
+  const rank=x=>ORDER.indexOf(cls(x))*100+(subOf(x)?Object.keys(CL[cls(x)].subs).indexOf(subOf(x))+1:0);
+  return [...set].sort((a,b)=>rank(a)-rank(b));
+}
+
+let tstep=0, tpick=[];
+function askTree(){
+  const x=cur.toks[queue[qi]], path=PATH[x.t], lv=S.level;
+  phase='q'; waiting=false; hintUsed=false;
+  renderSentence();
+  const key=tstep===0?'':path.slice(0,tstep).join('>');
+  let opts=tstep===0?ORDER.slice():CH[key].slice();
+  if(lv===10||lv===12) opts.sort(()=>Math.random()-.5);
+  const crumb=path.slice(0,tstep).map((v,i)=>`<span class="crumb">${stepLabel(v,i)}</span>`).join(' › ');
+  $('q').innerHTML=`<span>Classifique</span> <b>“${x.w}”</b>${x.w.includes(' ')?'<span class="mode">locução</span>':''}<span class="mode">árvore · etapa ${tstep+1}</span>${x.review?'<span class="mode rev">★ revisão</span>':''}${crumb?`<span class="crumbs">${crumb} › <b>?</b></span>`:''}`;
+  $('opts').innerHTML=opts.map((o,i)=>{
+    const c=lv>=9?{bg:'var(--line)',fg:'var(--ink)'}:color(tstep===0?o:path[0],false);
+    return `<button class="o" data-o="${o}" style="--sw:${c.bg};--swt:${c.fg}"><span class="k">${(i+1)%10}</span>${stepLabel(o,tstep)}</button>`;}).join('');
+  $('opts').querySelectorAll('.o').forEach(b=>b.onclick=()=>answerTree(b.dataset.o));
+  if(!$('fb').querySelector('.good')) $('fb').innerHTML='';
+  $('bHint').disabled=lv===10||lv===12;
+}
+function answerTree(o){
+  if(phase!=='q') return;
+  const x=cur.toks[queue[qi]], path=PATH[x.t], lv=S.level;
+  tpick.push(o);
+  if(o===path[tstep]){
+    tstep++;
+    if(tstep<path.length){ $('fb').innerHTML=`<div class="box good"><span class="crumbs">${pathLabel(path.slice(0,tstep))} ✓</span></div>`; return askTree(); }
+    record(x,pathLabel(tpick),true,'arvore');
+    x.rev=true; phase='fb'; S.streak++; S.best=Math.max(S.best,S.streak);
+    let pts=Math.round((10+2*lv+Math.min(S.streak,20))*(1+.5*(path.length-1))); if(hintUsed) pts=Math.ceil(pts/2); S.score+=pts;
+    const extra=x.t==='sub'?' (concreto/abstrato não é consenso para esta palavra)':'';
+    $('opts').querySelectorAll('.o').forEach(b=>{b.disabled=true;if(b.dataset.o===o)b.classList.add('right');});
+    $('fb').innerHTML=`<div class="box good"><b>+${pts}</b> ${chip(x.t,lv)}<span class="ex">${pathLabel(path)}${extra}${x.nt?' · '+x.nt:''}</span></div>`;
+    renderSentence(); updateHUD(); save();
+    setTimeout(next, x.nt?1200:500);
+  } else {
+    record(x,pathLabel(tpick),false,'arvore');
+    x.rev=true; x.miss=true; phase='fb'; S.streak=0; waiting=true;
+    $('opts').querySelectorAll('.o').forEach(b=>{b.disabled=true;if(b.dataset.o===path[tstep])b.classList.add('right');else if(b.dataset.o===o)b.classList.add('picked');});
+    $('fb').innerHTML=`<div class="box bad"><span><b>“${x.w}”</b> →</span> ${chip(x.t,lv)}<span class="ex">Correto: <b>${pathLabel(path)}</b>. Você escolheu: ${pathLabel(tpick)}.<br>${explain(x)}</span><button class="btn go" id="bGo">Continuar ⏎</button></div>`;
+    $('bGo').onclick=next; renderSentence(); updateHUD(); save();
+    setTimeout(()=>$('bGo')&&$('bGo').focus({preventScroll:true}),30);
+  }
+  $('bHint').disabled=true;
+  checkLevel();
+}
+
+/* ===== Escrita por extenso (níveis 11–12), só para o que já domina bem ===== */
+let wmode=false;
+function writeOK(x){ if(S.level<11) return false; const m=S.mast['A:'+x.t]; return !!(m&&m.st>=(S.level===11?2:1)); }
+const STOPW=new Set(['de','do','da','dos','das','caso','o','a','e','um','uma']);
+const normW=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\(.*?\)/g,' ').replace(/[^a-z ]/g,' ').split(/\s+/).filter(w=>w&&!STOPW.has(w));
+const W_ALIAS={'sub.col':['substantivo coletivo','substantivo comum coletivo','substantivo concreto coletivo'],
+  'sub':['substantivo comum concreto','substantivo comum abstrato'],'prep.c':['contracao','preposicao contraida','contracao preposicao artigo'],'pron.trat':['pronome tratamento']};
+function lev(a,b){const d=Array.from({length:a.length+1},(_,i)=>[i]);for(let j=1;j<=b.length;j++)d[0][j]=j;
+  for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return d[a.length][b.length];}
+const tokM=(u,e)=>u===e?0:(e.length>=5&&lev(u,e)<=1?1:-1);
+function checkWrite(txt,t){
+  const U=normW(txt), cands=[PATH[t].map((v,i)=>stepLabel(v,i)).join(' ')].concat(W_ALIAS[t]||[]);
+  for(const c of cands){ const E=normW(c); if(E.length!==U.length) continue;
+    const used=U.map(()=>false); let near=false, ok=true;
+    for(const e of E){ let f=-1; for(let i=0;i<U.length;i++){ if(used[i]) continue; const m=tokM(U[i],e); if(m>=0){f=i;if(m)near=true;break;} }
+      if(f<0){ok=false;break;} used[f]=true; }
+    if(ok) return {ok:true,near};
+  }
+  const cn=normW(CL[cls(t)].n)[0]; return {ok:false,classOk:U.some(u=>tokM(u,cn)>=0)};
+}
+function askWrite(){
+  const x=cur.toks[queue[qi]], lv=S.level;
+  phase='q'; waiting=false; hintUsed=false; wmode=true;
+  renderSentence();
+  $('q').innerHTML=`<span>Escreva a classificação completa de</span> <b>“${x.w}”</b>${x.w.includes(' ')?'<span class="mode">locução</span>':''}<span class="mode wr">✍ escrita</span>${x.review?'<span class="mode rev">★ revisão</span>':''}`;
+  $('opts').innerHTML=`<form id="wForm" class="wform" autocomplete="off"><input id="wIn" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Classificação por extenso" placeholder="Ex.: pronome pessoal do caso reto"><button class="btn go" type="submit">Responder ⏎</button></form>`;
+  $('wForm').onsubmit=e=>{e.preventDefault();answerWrite($('wIn').value);};
+  $('fb').innerHTML=`<div class="box hint"><span class="ex">Você já domina esta classificação, então agora é por extenso: classe e todas as subclasses (ex.: <i>conjunção subordinativa causal</i>). Acentos, maiúsculas e "de/do caso" não importam.</span></div>`;
+  $('bHint').disabled=lv===12;
+  setTimeout(()=>$('wIn')&&$('wIn').focus({preventScroll:true}),30);
+}
+function answerWrite(txt){
+  if(phase!=='q'||!wmode) return;
+  if(!txt.trim()){ $('wIn').focus(); return; }
+  const x=cur.toks[queue[qi]], lv=S.level, path=PATH[x.t], res=checkWrite(txt,x.t);
+  record(x,txt.trim(),res.ok,'escrita');
+  x.rev=true; phase='fb'; wmode=false; $('wIn').disabled=true; $('bHint').disabled=true;
+  if(res.ok){
+    S.streak++; S.best=Math.max(S.best,S.streak);
+    let pts=2*(10+2*lv+Math.min(S.streak,20)); if(hintUsed) pts=Math.ceil(pts/2); S.score+=pts;
+    $('fb').innerHTML=`<div class="box good"><b>+${pts}</b> ${chip(x.t,lv)}<span class="ex">${pathLabel(path)}${res.near?' · aceito, mas confira a grafia':''}${x.nt?' · '+x.nt:''}</span></div>`;
+    renderSentence(); updateHUD(); save();
+    setTimeout(next, res.near||x.nt?1500:700);
+  } else {
+    S.streak=0; x.miss=true; waiting=true;
+    $('fb').innerHTML=`<div class="box bad"><span><b>“${x.w}”</b> →</span> ${chip(x.t,lv)}<span class="ex">Correto: <b>${pathLabel(path)}</b>. Você escreveu: “${esc(txt.trim())}”. ${res.classOk?'<b>Classe certa</b>, mas faltou ou errou a subclasse. ':''}Esta classificação volta a ser treinada com opções.<br>${explain(x)}</span><button class="btn go" id="bGo">Continuar ⏎</button></div>`;
+    $('bGo').onclick=next; renderSentence(); updateHUD(); save();
+    setTimeout(()=>$('bGo')&&$('bGo').focus({preventScroll:true}),30);
+  }
+  checkLevel();
+}
+
+function ask(){
+  const x0=cur.toks[queue[qi]];
+  wmode=false;
+  if(scope(x0.t,S.level)==='tree'&&writeOK(x0)){ $('fb').innerHTML=''; return askWrite(); }
+  if(scope(x0.t,S.level)==='tree'){ tstep=x0.vmark?1:0; tpick=x0.vmark?['v']:[]; $('fb').innerHTML=''; return askTree(); }
+  const x=cur.toks[queue[qi]], mode=scope(x.t,S.level);
+  phase='q'; waiting=false; hintUsed=false;
+  renderSentence();
+  const opts=optionsFor(x.t,mode);
+  const step=S.order==='verbo'?`<span class="mode">passo 2: ${cls(x.t)==='v'&&x.vmark?'tipo de verbo':'demais palavras'}</span>`:'';
+  $('q').innerHTML=`<span>Qual é ${mode==='sub'?'a classificação completa':'a classe'} de</span> <b>“${x.w}”</b>${x.w.includes(' ')?'<span class="mode">locução</span>':''}<span class="mode">${mode==='sub'?'classe + subclasse':'classe'}</span>${step}${x.review?'<span class="mode rev">★ revisão</span>':''}`;
+  $('opts').innerHTML=opts.map((o,i)=>{const c=color(o,S.level>=3);const lab=mode==='sub'?fullLabel(o):CL[o].n;
+    return `<button class="o" data-o="${o}" style="--sw:${c.bg};--swt:${c.fg}"><span class="k">${(i+1)%10}</span>${lab}</button>`;}).join('');
+  $('opts').querySelectorAll('.o').forEach(b=>b.onclick=()=>answer(b.dataset.o));
+  $('fb').innerHTML='';
+  $('bHint').disabled=false;
+}
+
+function chip(t,lv){const c=color(t,lv>=3);return `<span class="chip" style="background:${c.bg};color:${c.fg}">${lv>=3?fullLabel(t):CL[cls(t)].n}</span>`;}
+
+function explain(x){
+  if(x.nt) return x.nt;
+  if(x.t==='prep.c'){const k=x.w.toLowerCase();return CONTR[k]?`contração: ${CONTR[k].replace(' + ',' (preposição) + ')} (artigo).`:EXPL['prep.c'];}
+  return EXPL[x.t]||EXPL[cls(x.t)];
+}
+
+/* registra uma resposta (estatísticas + histórico completo) */
+function record(x,ans,right,mode){
+  const key=x.w.toLowerCase()+'|'+x.t, tk=(mode==='sub'||mode==='arvore')?x.t:cls(x.t), c=cls(x.t);
+  S.ans++; S.per[c]=S.per[c]||{a:0,o:0}; S.per[c].a++;
+  S.win.push(right?1:0); if(S.win.length>20) S.win.shift();
+  if(right){ S.ok++; S.per[c].o++; S.errW[key]=Math.max(0,(S.errW[key]||0)-1); S.errT[tk]=Math.max(0,(S.errT[tk]||0)-.5); }
+  else { S.errW[key]=Math.min(6,(S.errW[key]||0)+2); S.errT[tk]=(S.errT[tk]||0)+1; }
+  const mk=mkey(x.t,mode), r=(right&&hintUsed)?null:bumpMast(mk,right,true); // acerto com dica não conta nem zera
+  if(r){ if(r.gain) setTimeout(()=>toast(`★ ${mLabel(mk)}: ${STG[r.stage].need} acerto(s) seguido(s)! Pula as próximas ${r.gain} vezes.`),50);
+         if(r.reset) setTimeout(()=>toast(`${mLabel(mk)} voltou ao início: acerte ${STG[0].need} seguidas.`),50); }
+  H.e.push([Date.now(),cur.id,x.w,x.t,ans,right?1:0,S.level,mode,hintUsed?1:0]);
+  if(!H.t[cur.id]) H.t[cur.id]=sentText(cur);
+  saveH();
+}
+
+function answer(o){
+  if(phase!=='q') return;
+  const x=cur.toks[queue[qi]], mode=scope(x.t,S.level), lv=S.level, c=cls(x.t);
+  const right = mode==='sub'? o===x.t : o===c;
+  record(x,o,right,mode);
+  x.rev=true; phase='fb';
+  const correctOpt = mode==='sub'?x.t:c;
+  $('opts').querySelectorAll('.o').forEach(b=>{b.disabled=true;if(b.dataset.o===correctOpt)b.classList.add('right');else if(b.dataset.o===o)b.classList.add('picked');});
+  $('bHint').disabled=true;
+  if(right){
+    S.streak++; S.best=Math.max(S.best,S.streak);
+    let pts=10+2*lv+Math.min(S.streak,20); if(hintUsed) pts=Math.ceil(pts/2); S.score+=pts;
+    $('fb').innerHTML=`<div class="box good"><b>+${pts}</b> ${chip(x.t,lv)} ${x.nt?`<span class="ex">${x.nt}</span>`:''}</div>`;
+    renderSentence(); updateHUD(); save();
+    setTimeout(next, x.nt?1100:380);
+  } else {
+    S.streak=0; x.miss=true;
+    let partial='';
+    if(mode==='sub'&&cls(o)===c) partial='<b>Classe certa</b>, subclasse errada. ';
+    $('fb').innerHTML=`<div class="box bad"><span><b>“${x.w}”</b> →</span> ${chip(x.t,lv)}<span class="ex">${partial}${explain(x)}</span><button class="btn go" id="bGo">Continuar ⏎</button></div>`;
+    $('bGo').onclick=next; waiting=true;
+    renderSentence(); updateHUD(); save();
+    setTimeout(()=>$('bGo')&&$('bGo').focus({preventScroll:true}),30);
+  }
+  checkLevel();
+}
+
+/* ===== Passo 1 (ordem recomendada): marcar os verbos da frase ===== */
+function startMark(){
+  phase='mark'; marks=new Set(); waiting=false; hintUsed=false;
+  renderSentence();
+  $('q').innerHTML=`<span><b style="font-size:19px">Passo 1:</b> toque em <b style="font-size:19px">todos os verbos</b> da frase</span><span class="mode">inclui auxiliares e de ligação</span>`;
+  const c=color('v',false);
+  $('opts').innerHTML=`<button class="o" id="bMark" style="--sw:${c.bg};--swt:${c.fg}"><span class="k">⏎</span>Confirmar verbos</button>`;
+  $('bMark').onclick=confirmMark;
+  $('fb').innerHTML=`<div class="box hint"><span class="ex">Comece pelo verbo: ele é o centro da oração. Quantos verbos (ou locuções verbais) houver, tantas orações haverá, e isso ajuda a decidir se "que", "se", "como" ligam orações. Teclas <kbd>1</kbd>–<kbd>0</kbd> marcam as palavras pelo número.</span></div>`;
+  $('bHint').disabled=true;
+}
+function toggleMark(i){ if(phase!=='mark') return; marks.has(i)?marks.delete(i):marks.add(i); renderSentence(); }
+function confirmMark(){
+  if(phase!=='mark') return;
+  const lv=S.level, missed=[], wrong=[]; let good=0;
+  cur.toks.forEach((x,i)=>{ if(!x.w||x.rev) return; const isV=cls(x.t)==='v', sel=marks.has(i);
+    if(isV){ x.vmark=true; if(sel){good++;record(x,'v',true,'marcar');} else {missed.push(x);x.miss=true;record(x,'nao-marcou',false,'marcar');} }
+    else if(sel){ wrong.push(x); x.miss=true; record(x,'v',false,'marcar'); } });
+  // monta a fila: tipos de verbo primeiro (quando o nível pede subclasse), depois as demais palavras da esquerda para a direita
+  const vq=[], rest=[];
+  cur.toks.forEach((x,i)=>{ if(!x.w||x.rev) return;
+    if(x.vmark){ if(scope(x.t,lv)!=='main'&&!x.mskip) vq.push(i); else {x.rev=true; if(x.mskip) x.mast=true;} } else rest.push(i); });
+  queue=vq.concat(rest); qi=0;
+  const ok=!missed.length&&!wrong.length;
+  if(ok){ let pts=0; for(let k=0;k<good;k++){S.streak++;pts+=10+2*lv+Math.min(S.streak,20);} S.best=Math.max(S.best,S.streak); S.score+=pts;
+    phase='markfb'; renderSentence(); updateHUD(); save();
+    $('fb').innerHTML=`<div class="box good"><b>+${pts}</b> ${good} verbo(s) encontrado(s)!</div>`;
+    setTimeout(()=>{ if(phase==='markfb') next(); },600);
+  } else {
+    S.streak=0; phase='markfb'; waiting=true; renderSentence(); updateHUD(); save();
+    const verbs=cur.toks.filter(x=>x.w&&cls(x.t)==='v').map(x=>`<b>${x.w}</b>`).join(', ');
+    $('fb').innerHTML=`<div class="box bad"><span class="ex">Verbos da frase: ${verbs}.
+      ${missed.length?`<br>Faltou marcar: ${missed.map(x=>`<b>${x.w}</b>${x.nt?' ('+x.nt+')':''}`).join(', ')}.`:''}
+      ${wrong.length?`<br>Não são verbos: ${wrong.map(x=>`<b>${x.w}</b> → ${chip(x.t,lv)}${x.nt?' '+x.nt:''}`).join('; ')}.`:''}</span>
+      <button class="btn go" id="bGo">Continuar ⏎</button></div>`;
+    $('bGo').onclick=next;
+    setTimeout(()=>$('bGo')&&$('bGo').focus({preventScroll:true}),30);
+  }
+  $('opts').innerHTML='';
+  checkLevel();
+}
+
+function next(){
+  if(phase==='end'){ clearTimeout(endTimer); return newSentence(); }
+  if(phase==='markfb'){ waiting=false; if(!queue.length) return endSentence(); qi=0; return ask(); }
+  waiting=false; qi++;
+  if(qi>=queue.length) return endSentence();
+  ask();
+}
+
+function endSentence(){
+  phase='end'; S.sents++; save(); updateHUD(); renderSentence();
+  const lv=S.level, seen=[]; cur.toks.forEach(x=>{if(x.w){x.rev=true;const k=lv>=3?x.t:cls(x.t); if(!seen.includes(k)) seen.push(k);}});
+  renderSentence();
+  $('q').innerHTML=`<span class="done">Frase completa! Revise as cores…</span>`;
+  $('opts').innerHTML='';
+  const miss=cur.toks.filter(x=>x.miss).length;
+  $('fb').innerHTML=`<div class="box hint">${seen.map(k=>chip(k,lv)).join(' ')}<span class="ex">${miss?`${miss} erro(s) nesta frase.`:'Sem erros!'}</span><button class="btn go" id="bGo">Próxima ⏎</button></div>`;
+  $('bGo').onclick=next;
+  endTimer=setTimeout(newSentence, miss?2600:1500);
+}
+
+let tries=0;
+function newSentence(){
+  clearTimeout(endTimer);
+  const s=pickSentence(); tries++;
+  S.recent.push(s.id); if(S.recent.length>Math.min(60,SENT.length-10)) S.recent.shift();
+  cur={id:s.id,toks:s.toks.map(x=>({...x}))};
+  queue=[];
+  const useM=S.skipM&&tries<25, verboFirst=S.order==='verbo';
+  cur.toks.forEach((x,i)=>{ if(!x.w) return; const sc=scope(x.t,S.level);
+    if(sc==='skip'){x.rev=true;x.skip=true;return;}
+    const k=mkey(x.t,sc);
+    if(useM&&k){
+      if(mSkipNow(k)){ x.mskip=true; if(!(verboFirst&&cls(x.t)==='v')){x.rev=true;x.mast=true;} return; }
+      if(mIsVerify(k)) x.review=true;
+    }
+    queue.push(i); });
+  qi=0; save();
+  const hasVerbToMark=verboFirst&&cur.toks.some(x=>x.w&&!x.rev&&cls(x.t)==='v');
+  if(!queue.length&&!hasVerbToMark) return newSentence();
+  tries=0;
+  queue=queue.filter(i=>!cur.toks[i].mskip);
+  if(hasVerbToMark) return startMark();
+  ask();
+}
+
+function checkLevel(){
+  const w=S.win; if(w.length<20) return;
+  const acc=w.reduce((a,b)=>a+b,0)/w.length;
+  if(acc>=.85&&S.level<MAXL) setLevel(S.level+1,`Subiu para o nível ${S.level+1}: ${LEVELS[S.level+1].d}`);
+  else if(acc<.5&&S.level>1) setLevel(S.level-1,`Voltando ao nível ${S.level-1} para reforçar a base`);
+}
+function setLevel(n,msg){ S.level=n; S.win=[]; save(); updateHUD(); renderLegend(); if(msg) toast(msg); }
+
+function updateHUD(){
+  $('sScore').textContent=S.score.toLocaleString('pt-BR');
+  $('sStreak').textContent=S.streak;
+  $('sAcc').textContent=S.ans?Math.round(100*S.ok/S.ans)+'%':'–';
+  $('sSent').textContent=S.sents;
+  $('lvNum').textContent=S.level; $('lvName').textContent=LEVELS[S.level].n;
+  const w=S.win, acc=w.length?w.reduce((a,b)=>a+b,0)/w.length:0;
+  $('lvBar').style.width=(w.length?Math.round(acc*100):0)+'%';
+  $('lvInfo').textContent=S.level<MAXL?(w.length<20?`${w.length}/20 respostas · sobe com 85%`:`${Math.round(acc*100)}% nas últimas 20 · sobe com 85%`):'nível máximo';
+  $('lvSel').value=S.level; $('ordSel').value=S.order;
+}
+
+function renderLegend(){
+  $('legBody').innerHTML=ORDER.map(c=>{const k=CL[c],col=color(c,false);
+    const subs=Object.keys(k.subs);
+    return `<details><summary><span class="dot" style="background:${col.bg}"></span>${k.n}</summary>
+      ${subs.length?`<ul>${subs.map(s=>`<li><span class="dot" style="background:${color(c+'.'+s,true).bg}"></span>${k.subs[s]}</li>`).join('')}</ul>`:''}
+      <div class="tip">${k.hint}</div></details>`;}).join('');
+}
+
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),3200);}
+
+function hint(){
+  if(phase!=='q'||hintUsed||S.level===10||S.level===12) return;
+  if(wmode){ hintUsed=true; const x=cur.toks[queue[qi]];
+    $('fb').innerHTML=`<div class="box hint"><span class="ex"><b>Dica:</b> começa com <b>${CL[cls(x.t)].n}</b>… <i>(acerto vale metade dos pontos e não conta para o domínio)</i></span></div>`;
+    $('bHint').disabled=true; $('wIn')&&$('wIn').focus(); return; }
+  hintUsed=true;
+  const x=cur.toks[queue[qi]], mode=scope(x.t,S.level), correct=mode==='tree'?PATH[x.t][tstep]:mode==='sub'?x.t:cls(x.t);
+  const btns=[...$('opts').querySelectorAll('.o')].filter(b=>b.dataset.o!==correct).sort(()=>Math.random()-.5);
+  btns.slice(0,Math.ceil(btns.length/2)).forEach(b=>b.disabled=true);
+  $('fb').innerHTML=`<div class="box hint"><span class="ex"><b>Dica:</b> ${CL[cls(x.t)].hint} <i>(acerto vale metade dos pontos)</i></span></div>`;
+  $('bHint').disabled=true;
+}
+
+/* ===== Histórico ===== */
+const MODE_N={main:'classe',sub:'classe + subclasse',marcar:'marcar verbos',arvore:'árvore completa',escrita:'escrita por extenso'};
+const corrLabel=(t,mode)=>mode==='arvore'||mode==='escrita'?pathLabel(PATH[t]):mode==='sub'?fullLabel(t):mode==='marcar'?(cls(t)==='v'?'Verbo':'Não é verbo ('+CL[cls(t)].n+')'):CL[cls(t)].n;
+const ansLabel=(a,mode)=>mode==='arvore'||mode==='escrita'?a:a==='nao-marcou'?'Não marcou como verbo':mode==='marcar'?'Marcou como verbo':CL[a]?CL[a].n:CL[cls(a)]?fullLabel(a):a;
+const fmtD=ts=>new Date(ts).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function histCSV(){
+  const q=v=>'"'+String(v).replace(/"/g,'""')+'"';
+  return ['data_hora;nivel;modo;frase;palavra;resposta_correta;sua_resposta;resultado;usou_dica']
+    .concat(H.e.map(([d,id,w,t,a,ok,lv,m,h])=>[q(new Date(d).toLocaleString('pt-BR')),lv,q(MODE_N[m]||m),q(H.t[id]||''),q(w),q(corrLabel(t,m)),q(ansLabel(a,m)),ok?'acerto':'erro',h?'sim':'não'].join(';'))).join('\n');
+}
+function histTable(f){
+  const rows=H.e.filter(r=>f==='all'||(f==='err'?!r[5]:r[5])).slice(-150).reverse();
+  if(!rows.length) return '<p class="done">Nenhuma resposta registrada ainda.</p>';
+  return `<div class="hwrap"><table class="stack htab"><thead><tr><th>Quando</th><th>Palavra</th><th>Correto</th><th>Sua resposta</th><th></th></tr></thead><tbody>${
+    rows.map(([d,id,w,t,a,ok,lv,m,h])=>`<tr class="${ok?'hok':'herr'}"><td>${fmtD(d)}</td><td><b>${esc(w)}</b><div class="hs">${esc(H.t[id]||'')}</div></td><td>${esc(corrLabel(t,m))}</td><td>${esc(ansLabel(a,m))}${h?' <small>(dica)</small>':''}</td><td>${ok?'✓':'✗'}</td></tr>`).join('')
+  }</tbody></table></div>${rows.length===150?'<p class="done">Mostrando as 150 mais recentes. "Copiar CSV" leva o histórico inteiro.</p>':''}`;
+}
+
+function mastRows(){
+  const score=m=>m.st*100+m.c*10+(m.sk>0?1:0);
+  const ks=Object.keys(S.mast).sort((a,b)=>score(S.mast[b])-score(S.mast[a]));
+  if(!ks.length) return '<p class="done">Ainda sem dados. Responda algumas frases.</p>';
+  const groups={C:[],T:[],A:[]}; ks.forEach(k=>groups[k[0]].push(k));
+  return Object.entries(groups).filter(g=>g[1].length).map(([p,arr])=>`<p class="done" style="margin:10px 0 4px">Modo ${mModeName[p]}</p>`+arr.map(k=>{
+    const t=k.slice(2), m=S.mast[k], col=color(t,p!=='C');
+    const pc=Math.round(100*(m.st+(m.c/STG[m.st].need))/STG.length);
+    const info=m.sk>0?`★ pula ${m.sk}`:m.st>0?`conferir`:`${m.c}/${STG[0].need}`;
+    return `<div class="srow"><span>${m.st>0?'★'.repeat(Math.min(m.st,5))+' ':''}${mLabel(k).replace(' (classe)','')}</span><div class="sbar" title="Etapa ${m.st+1} de ${STG.length}"><i style="width:${pc}%;background:${col.bg}"></i></div><span class="num">${info}</span></div>`;}).join('')).join('');
+}
+
+function stats(){
+  const rows=ORDER.map(c=>{const p=S.per[c]||{a:0,o:0},pc=p.a?Math.round(100*p.o/p.a):0,col=color(c,false);
+    return `<div class="srow"><span><span class="dot" style="display:inline-block;vertical-align:-2px;background:${col.bg}"></span> ${CL[c].n}</span><div class="sbar"><i style="width:${pc}%;background:${col.bg}"></i></div><span class="num">${p.a?pc+'%':'–'} <small>(${p.o}/${p.a})</small></span></div>`;}).join('');
+  const miss=Object.entries(S.errW).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,14)
+    .map(([k])=>{const [w,t]=k.split('|');const c=color(t,true);return `<span class="chip" style="background:${c.bg};color:${c.fg}">${w} · ${shortLabel(t,6)}</span>`;}).join('');
+  const nOk=H.e.filter(r=>r[5]).length;
+  $('mbox').innerHTML=`<h2>Estatísticas</h2>
+    <p>${S.ans} respostas · ${S.ans?Math.round(100*S.ok/S.ans):0}% de acerto · ${S.sents} frases · melhor sequência: <b>${S.best}</b></p>
+    ${rows}
+    <h3>Domínio</h3><p class="done" style="font-weight:600;margin-top:-6px">Acerte ${STG.map(g=>g.need).join(' → ')} seguidas para pular ${STG.map(g=>g.skip).join(' → ')} vezes. Um erro volta ao início. Mais de ${STALE_DAYS} dias sem responder também faz a pergunta voltar.</p>
+    <label class="row" style="margin-top:0"><input type="checkbox" id="mSkip" ${S.skipM?'checked':''}> Pular o que já domino (as perguntas voltam para conferir)</label>
+    ${mastRows()}
+    <h3>Palavras para revisar</h3><div class="miss">${miss||'<span class="done">Nenhuma pendente. Muito bem!</span>'}</div>
+    <h3>Histórico de respostas <small class="done">(${H.e.length} registradas: ${nOk} acertos, ${H.e.length-nOk} erros)</small></h3>
+    <div class="row"><select id="hFil" aria-label="Filtrar histórico"><option value="all">Todas</option><option value="err">Só erros</option><option value="ok">Só acertos</option></select>
+      <button class="btn" id="hCopy">Copiar CSV</button><button class="btn" id="hDel">Apagar histórico</button></div>
+    <div id="hBody">${histTable('all')}</div><textarea id="hTxt" class="htxt" readonly hidden></textarea>
+    <div class="row" style="margin-top:18px"><button class="btn" id="mClose">Fechar</button><button class="btn" id="mReset">Zerar progresso (mantém o histórico)</button></div>`;
+  $('modal').classList.add('on');
+  $('mSkip').onchange=e=>{S.skipM=e.target.checked;save();};
+  $('hFil').onchange=e=>$('hBody').innerHTML=histTable(e.target.value);
+  $('hCopy').onclick=async e=>{const csv=histCSV();
+    try{await navigator.clipboard.writeText(csv);e.target.textContent='Copiado!';}
+    catch(err){const t=$('hTxt');t.hidden=false;t.value=csv;t.focus();t.select();e.target.textContent='Selecionado abaixo: Ctrl+C';}};
+  $('hDel').onclick=e=>{ if(e.target.dataset.c){H={e:[],t:{}};saveH();stats();} else {e.target.dataset.c=1;e.target.textContent='Clique de novo para apagar tudo';} };
+  $('mClose').onclick=()=>$('modal').classList.remove('on');
+  $('mReset').onclick=e=>{ if(e.target.dataset.c){const o=S.order;S=fresh();S.order=o;save();$('modal').classList.remove('on');updateHUD();renderLegend();newSentence();} else {e.target.dataset.c=1;e.target.textContent='Clique de novo para confirmar';} };
+}
+
+/* ================= EVENTOS ================= */
+$('lvSel').innerHTML=LEVELS.slice(1).map((l,i)=>`<option value="${i+1}">Nível ${i+1}: ${l.n}</option>`).join('');
+$('lvSel').onchange=e=>{setLevel(+e.target.value);newSentence();};
+$('ordSel').onchange=e=>{S.order=e.target.value;save();newSentence();};
+$('bHint').onclick=hint;
+$('bSkip').onclick=()=>newSentence();
+$('bStats').onclick=stats;
+$('bLeg').onclick=()=>$('wrap').classList.toggle('nolegend');
+$('modal').onclick=e=>{if(e.target.id==='modal')$('modal').classList.remove('on');};
+$('sent').addEventListener('click',e=>{const w=e.target.closest('.w[data-i]'); if(w) toggleMark(+w.dataset.i);});
+/* Proteção contra clique duplo: na área do jogo, ignora cliques repetidos muito rápidos
+   e cliques que caem em botões que acabaram de aparecer (ex.: próxima etapa da árvore). */
+{ const GAP=320; let lastClick=0, shownAt=0;
+  const mo=new MutationObserver(()=>{shownAt=performance.now();});
+  ['opts','fb'].forEach(id=>mo.observe($(id),{childList:true}));
+  document.addEventListener('click',e=>{
+    if(!e.isTrusted||e.detail===0) return;               // teclado / programático: sem bloqueio
+    if(!e.target.closest('.paper')) return;
+    if(!e.target.closest('button,.w[data-i]')) return;
+    const now=performance.now();
+    if(e.detail>1||now-lastClick<GAP||now-shownAt<GAP){ e.stopPropagation(); e.preventDefault(); return; }
+    lastClick=now;
+  },true); }
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='SELECT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='INPUT'||e.ctrlKey||e.metaKey||e.altKey) return;
+  if($('modal').classList.contains('on')){ if(e.key==='Escape')$('modal').classList.remove('on'); return; }
+  if(phase==='mark'){
+    if(e.key==='Enter'){e.preventDefault();return confirmMark();}
+    if(e.key===' '&&e.target.closest&&e.target.closest('.w[data-i]')){e.preventDefault();return toggleMark(+e.target.closest('.w[data-i]').dataset.i);}
+    if(/^[0-9]$/.test(e.key)){const n=e.key==='0'?10:+e.key;const w=$('sent').querySelector(`.w[data-n="${n}"]`);if(w)toggleMark(+w.dataset.i);}
+    return;
+  }
+  if(e.key==='Enter'||e.key===' '){ if(waiting||phase==='end'){e.preventDefault();next();} return; }
+  if(/^[0-9]$/.test(e.key)&&phase==='q'){ const i=e.key==='0'?9:+e.key-1; const b=$('opts').querySelectorAll('.o')[i]; if(b&&!b.disabled) b.click(); return; }
+  if(e.key==='h'||e.key==='H') hint();
+  if(e.key==='l'||e.key==='L') $('wrap').classList.toggle('nolegend');
+});
+
+renderLegend(); updateHUD(); newSentence();
+}
+</script>
+</body>
+</html>
