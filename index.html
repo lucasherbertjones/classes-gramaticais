@@ -214,7 +214,7 @@ const EXPL = {
   'conj.prop':'conjunção subordinativa proporcional: indica proporção (à medida que).',
   'interj':'interjeição: exprime emoção ou sensação.'
 };
-const CONTR = {do:'de + o',da:'de + a',dos:'de + os',das:'de + as',no:'em + o',na:'em + a',nos:'em + os',nas:'em + as',pelo:'por + o',pela:'por + a',ao:'a + o','à':'a + a',num:'em + um',numa:'em + uma'};
+const CONTR = {aos:'a + os','às':'a + as',do:'de + o',da:'de + a',dos:'de + os',das:'de + as',no:'em + o',na:'em + a',nos:'em + os',nas:'em + as',pelo:'por + o',pela:'por + a',ao:'a + o','à':'a + a',num:'em + um',numa:'em + uma'};
 const CROSS = {'pron.rel':['conj.int'],'conj.int':['pron.rel'],'art.def':['prep.s','pron.obl'],'prep.s':['art.def'],'pron.obl':['art.def','pron.dem'],'pron.dem':['art.def','pron.obl'],
   'art.ind':['num.card'],'num.card':['art.ind'],'adv.int':['pron.ind','num.frac'],'pron.ind':['adv.int'],'num.frac':['adv.int'],'conj.comp':['conj.conf'],'conj.conf':['conj.comp','prep.s'],
   'conj.caus':['conj.expl'],'conj.expl':['conj.caus','pron.rel'],'conj.cond':['conj.int','pron.obl'],'adv.mod':['adj','conj.comp'],'adv.tem':['conj.concl'],'conj.concl':['adv.tem'],'pron.int':['pron.rel','adv.int'],'prep.c':['art.def']};
@@ -473,6 +473,306 @@ Minha|pron.pos avó|sub.cc faz|v.pri um|art.ind bolo|sub.cc delicioso|adj .
 As|art.def crianças|sub.cc correm|v.pri no|prep.c parque|sub.cc .
 O|art.def sol|sub.cc está|v.lig forte|adj hoje|adv.tem .
 Pedro|sub.pr abriu|v.pri a|art.def janela|sub.cc devagar|adv.mod .
+A|art.def menina|sub.cc ganhou|v.pri uma|art.ind bicicleta|sub.cc nova|adj .
+Os|art.def alunos|sub.cc leram|v.pri um|art.ind poema|sub bonito|adj .
+Uns|art.ind meninos|sub.cc jogavam|v.pri bola|sub.cc na|prep.c praça|sub.cc .
+Umas|art.ind nuvens|sub.cc escuras|adj cobriram|v.pri o|art.def céu|sub.cc .
+Clara|sub.pr visitou|v.pri Salvador|sub.pr com|prep.s a|art.def avó|sub.cc .
+Fortaleza|sub.pr fica|v.pri no|prep.c Ceará|sub.pr .
+Marcos|sub.pr adora|v.pri chocolate|sub.cc amargo|adj .
+A|art.def tristeza|sub.ca passou|v.pri rapidamente|adv.mod .
+A|art.def esperança|sub.ca mantém|v.pri as|art.def pessoas|sub.cc firmes|adj .
+A|art.def honestidade|sub.ca é|v.lig rara|adj .
+A|art.def felicidade|sub.ca da|prep.c avó|sub.cc emocionou|v.pri a|art.def família|sub .
+A|art.def inveja|sub.ca destrói|v.pri amizades|sub.ca .
+O|art.def cansaço|sub.ca venceu|v.pri o|art.def atleta|sub.cc .
+A|art.def plateia|sub.col|coletivo_de_espectadores aplaudiu|v.pri o|art.def espetáculo|sub .
+O|art.def coro|sub.col|coletivo_de_cantores cantou|v.pri uma|art.ind canção|sub antiga|adj .
+A|art.def tripulação|sub.col|coletivo_de_tripulantes preparou|v.pri o|art.def navio|sub.cc .
+A|art.def manada|sub.col atravessou|v.pri o|art.def rio|sub.cc .
+Uma|art.ind colmeia|sub.col|coletivo_de_abelhas enorme|adj apareceu|v.pri no|prep.c telhado|sub.cc .
+O|art.def júri|sub.col|coletivo_de_jurados escolheu|v.pri a|art.def melhor|adj receita|sub .
+A|art.def constelação|sub.col|coletivo_de_estrelas brilhava|v.pri no|prep.c céu|sub.cc .
+Ganhei|v.pri um|art.ind ramalhete|sub.col|coletivo_de_flores de|prep.s rosas|sub.cc .
+O|art.def batalhão|sub.col|coletivo_de_soldados marchou|v.pri pela|prep.c avenida|sub.cc .
+A|art.def boiada|sub.col|coletivo_de_bois levantou|v.pri poeira|sub.cc .
+Comprei|v.pri uma|art.ind resma|sub.col|coletivo_de_folhas_de_papel de|prep.s papel|sub.cc .
+O|art.def cacho|sub.col|coletivo_de_uvas_(ou_bananas) de|prep.s uvas|sub.cc caiu|v.pri .
+Lisboa|sub.pr é|v.lig uma|art.ind cidade|sub.cc linda|adj .
+O|art.def Tejo|sub.pr atravessa|v.pri Lisboa|sub.pr .
+Juliana|sub.pr e|conj.adi Rafael|sub.pr casaram|v.pri ontem|adv.tem .
+O|art.def Japão|sub.pr exporta|v.pri carros|sub.cc .
+Rex|sub.pr é|v.lig um|art.ind cachorro|sub.cc dócil|adj .
+A|art.def girafa|sub.cc tem|v.pri pescoço|sub.cc comprido|adj .
+O|art.def café|sub.cc estava|v.lig amargo|adj .
+Aquela|pron.dem montanha|sub.cc parece|v.lig altíssima|adj .
+O|art.def bolo|sub.cc ficou|v.lig delicioso|adj .
+A|art.def sala|sub.cc permanecia|v.lig vazia|adj .
+O|art.def menino|sub.cc continua|v.lig tímido|adj .
+Meu|pron.pos primo|sub.cc virou|v.lig|=_tornou-se:_liga_o_sujeito_a_'médico' médico|sub.cc .
+A|art.def rua|sub.cc anda|v.lig|=_está:_liga_'rua'_a_'perigosa' perigosa|adj .
+Comprei|v.pri cinco|num.card laranjas|sub.cc na|prep.c feira|sub .
+Vinte|num.card alunos|sub.cc participaram|v.pri da|prep.c gincana|sub .
+A|art.def escola|sub.cc tem|v.pri mil|num.card livros|sub.cc .
+Cem|num.card pessoas|sub.cc assistiram|v.pri ao|prep.c show|sub .
+Ela|pron.reto fez|v.pri dois|num.card gols|sub na|prep.c partida|sub .
+O|art.def quinto|num.ord capítulo|sub é|v.lig emocionante|adj .
+Moro|v.pri no|prep.c décimo|num.ord andar|sub.cc .
+Ele|pron.reto terminou|v.pri a|art.def corrida|sub em|prep.s quarto|num.ord|indica_posição:_numeral_ordinal lugar|sub .
+A|art.def segunda|num.ord|indica_ordem:_numeral_ordinal tentativa|sub foi|v.lig melhor|adj .
+O|art.def primeiro|num.ord dia|sub das|prep.c férias|sub foi|v.lig ótimo|adj .
+Ele|pron.reto ganha|v.pri o|art.def triplo|num.mult do|prep.c meu|pron.pos salário|sub .
+Quero|v.pri o|art.def dobro|num.mult de|prep.s sorvete|sub.cc .
+Ela|pron.reto recebeu|v.pri o|art.def quíntuplo|num.mult do|prep.c valor|sub .
+Pedi|v.pri uma|art.ind dose|sub dupla|num.mult|numeral_multiplicativo_(=_duas_vezes)_usado_junto_ao_substantivo de|prep.s café|sub.cc .
+O|art.def lucro|sub foi|v.lig o|art.def quádruplo|num.mult do|prep.c previsto|sub|particípio_substantivado_(com_artigo) .
+Dois|num.card terços|num.frac da|prep.c turma|sub.col passaram|v.pri .
+Esperei|v.pri meia|num.frac|=_metade_de_uma_hora hora|sub .
+Bebi|v.pri metade|num.frac da|prep.c garrafa|sub.cc .
+Um|num.card|com_'terço',_indica_quantidade_exata_(um_terço) terço|num.frac do|prep.c bolo|sub.cc sumiu|v.pri .
+Ele|pron.reto comprou|v.pri três|num.card camisas|sub.cc e|conj.adi duas|num.card calças|sub.cc .
+Tu|pron.reto és|v.lig muito|adv.int corajoso|adj .
+Vós|pron.reto sois|v.lig bem-vindos|adj .
+Elas|pron.reto viajaram|v.pri juntas|adj .
+Nós|pron.reto o|pron.obl|=_ele:_acompanha_o_verbo,_não_um_substantivo ajudamos|v.pri ontem|adv.tem .
+Eu|pron.reto te|pron.obl espero|v.pri na|prep.c porta|sub.cc .
+O|art.def professor|sub.cc nos|pron.obl|pronome_oblíquo_(=_a_nós);_aqui_não_é_'em_+_os' elogiou|v.pri .
+Mandei|v.pri flores|sub.cc para|prep.s ti|pron.obl .
+Ela|pron.reto saiu|v.pri contigo|pron.obl ?
+Vocês|pron.trat vêm|v.pri conosco|pron.obl ?
+Eu|pron.reto lhes|pron.obl contei|v.pri a|art.def verdade|sub.ca .
+Ele|pron.reto as|pron.obl|=_elas:_acompanha_o_verbo,_não_um_substantivo encontrou|v.pri na|prep.c escola|sub.cc .
+Ela|pron.reto se|pron.obl|pronome_reflexivo:_ela_olhou_para_si_mesma olhou|v.pri no|prep.c espelho|sub.cc .
+Vossa_Excelência|pron.trat|locução_pronominal_de_tratamento_(autoridades) aceita|v.pri um|art.ind café|sub.cc ?
+Você|pron.trat viu|v.pri meu|pron.pos celular|sub.cc ?
+Vossa_Majestade|pron.trat|tratamento_para_reis_e_rainhas chegou|v.pri .
+O_senhor|pron.trat|locução_de_tratamento_(respeito) precisa|v.pri de|prep.s ajuda|sub.ca ?
+A_senhora|pron.trat|locução_de_tratamento_(respeito) mora|v.pri aqui|adv.lug ?
+Teu|pron.pos irmão|sub.cc ligou|v.pri .
+Nossa|pron.pos|aqui_indica_posse_(=_de_nós),_não_é_interjeição casa|sub.cc fica|v.pri perto|adv.lug .
+Vossos|pron.pos filhos|sub.cc são|v.lig educados|adj .
+Suas|pron.pos mãos|sub.cc estavam|v.lig frias|adj .
+Este|pron.dem livro|sub.cc é|v.lig meu|pron.pos ; aquele|pron.dem é|v.lig teu|pron.pos .
+Isto|pron.dem aqui|adv.lug está|v.lig quebrado|adj .
+Aquilo|pron.dem parecia|v.lig estranho|adj .
+Essa|pron.dem blusa|sub.cc combina|v.pri com|prep.s você|pron.trat .
+Ela|pron.reto própria|pron.dem|reforça_'ela'_(=_mesma):_pronome_demonstrativo pintou|v.pri a|art.def parede|sub.cc .
+Não|adv.neg concordo|v.pri com|prep.s o|pron.dem|=_aquilo;_não_acompanha_substantivo que|pron.rel|retoma_'o'_(aquilo_que) ele|pron.reto disse|v.pri .
+Alguns|pron.ind alunos|sub.cc chegaram|v.pri cedo|adv.tem .
+Nada|pron.ind aconteceu|v.pri .
+Tudo|pron.ind está|v.lig pronto|adj .
+Qualquer|pron.ind pessoa|sub.cc pode|v.aux participar|v.pri .
+Certo|pron.ind|=_um_(algum):_pronome_indefinido_antes_do_substantivo dia|sub , ele|pron.reto apareceu|v.pri .
+Vários|pron.ind amigos|sub.cc vieram|v.pri à|prep.c festa|sub .
+Pouca|pron.ind gente|sub compareceu|v.pri .
+Outra|pron.ind vez|sub ele|pron.reto esqueceu|v.pri a|art.def chave|sub.cc .
+A|art.def pessoa|sub.cc com|prep.s quem|pron.rel|retoma_'pessoa'_(=_a_qual) falei|v.pri é|v.lig simpática|adj .
+A|art.def casa|sub.cc em|prep.s que|pron.rel|retoma_'casa'_(=_na_qual) moro|v.pri é|v.lig antiga|adj .
+O|art.def autor|sub.cc cujo|pron.rel|relativo_de_posse:_o_livro_do_autor livro|sub.cc li|v.pri visitou|v.pri a|art.def escola|sub.cc .
+A|art.def empresa|sub.cc para|prep.s a_qual|pron.rel|'a_qual'_retoma_'empresa' trabalho|v.pri|aqui_é_verbo_(eu_trabalho) cresceu|v.pri .
+O|art.def filme|sub que|pron.rel vimos|v.pri era|v.lig longo|adj .
+Quem|pron.int trouxe|v.pri o|art.def bolo|sub.cc ?
+Qual|pron.int camisa|sub.cc você|pron.trat prefere|v.pri ?
+Quanto|pron.int custa|v.pri o|art.def ingresso|sub.cc ?
+Quantas|pron.int pessoas|sub.cc vieram|v.pri ?
+Que|pron.int|interrogativo_junto_de_substantivo_(=_qual) filme|sub vocês|pron.trat viram|v.pri ?
+Quem|pron.int é|v.lig você|pron.trat ?
+Ela|pron.reto está|v.aux estudando|v.pri para|prep.s a|art.def prova|sub .
+Nós|pron.reto vamos|v.aux viajar|v.pri amanhã|adv.tem .
+Eles|pron.reto tinham|v.aux comido|v.pri tudo|pron.ind .
+O|art.def livro|sub.cc foi|v.aux|voz_passiva:_'foi'_ajuda_'escrito' escrito|v.pri por|prep.s uma|art.ind jovem|sub.cc .
+Você|pron.trat deve|v.aux descansar|v.pri mais|adv.int .
+Os|art.def alunos|sub.cc podem|v.aux sair|v.pri agora|adv.tem .
+Temos|v.aux trabalhado|v.pri muito|adv.int .
+A|art.def ponte|sub.cc será|v.aux construída|v.pri pela|prep.c prefeitura|sub .
+O|art.def bebê|sub.cc estava|v.aux chorando|v.pri .
+Ele|pron.reto havia|v.aux saído|v.pri cedo|adv.tem .
+O|art.def vento|sub.cc soprava|v.pri forte|adv.mod|modifica_'soprava'_e_não_varia:_adjetivo_virou_advérbio .
+Ela|pron.reto é|v.lig professora|sub.cc .
+Os|art.def doces|sub.cc estão|v.pri|=_encontram-se_(lugar):_não_liga_a_característica na|prep.c mesa|sub.cc .
+Ele|pron.reto ficou|v.pri|=_permaneceu_num_lugar:_não_liga_a_característica em|prep.s casa|sub.cc .
+A|art.def criança|sub.cc parece|v.lig feliz|adj .
+O|art.def céu|sub.cc permanece|v.lig nublado|adj .
+Ela|pron.reto chegou|v.pri tarde|adv.tem|modifica_'chegou'_(=_depois_da_hora) .
+À|prep.c tarde|sub|com_'à'_antes:_substantivo_(parte_do_dia) , fomos|v.pri ao|prep.c cinema|sub.cc .
+Agora|adv.tem vamos|v.aux jantar|v.pri .
+Depois|adv.tem conversamos|v.pri .
+Ele|pron.reto já|adv.tem terminou|v.pri a|art.def tarefa|sub .
+Ainda|adv.tem chove|v.pri lá|adv.lug fora|adv.lug .
+Antes|adv.tem , a|art.def cidade|sub.cc era|v.lig tranquila|adj .
+Ela|pron.reto sempre|adv.tem sorri|v.pri .
+Moro|v.pri aqui|adv.lug há|v.pri|haver_indicando_tempo_decorrido:_verbo_principal dez|num.card anos|sub .
+O|art.def gato|sub.cc dorme|v.pri ali|adv.lug .
+Coloque|v.pri a|art.def caixa|sub.cc lá|adv.lug .
+O|art.def mercado|sub.cc fica|v.pri longe|adv.lug .
+Venha|v.pri cá|adv.lug !
+O|art.def cachorro|sub.cc ficou|v.pri|=_permaneceu_(lugar):_não_liga_a_característica dentro|adv.lug .
+Ele|pron.reto dirige|v.pri mal|adv.mod .
+Ela|pron.reto falou|v.pri calmamente|adv.mod .
+Faça|v.pri assim|adv.mod .
+O|art.def ônibus|sub.cc passou|v.pri depressa|adv.mod .
+Ele|pron.reto respondeu|v.pri gentilmente|adv.mod .
+O|art.def filme|sub foi|v.lig extremamente|adv.int engraçado|adj .
+Estou|v.lig tão|adv.int feliz|adj !
+Ela|pron.reto comeu|v.pri demais|adv.int .
+Quase|adv.int caí|v.pri da|prep.c escada|sub.cc .
+Ele|pron.reto trabalha|v.pri menos|adv.int agora|adv.tem .
+A|art.def sopa|sub.cc está|v.lig pouco|adv.int salgada|adj .
+Eu|pron.reto jamais|adv.neg mentiria|v.pri .
+Não|adv.neg gosto|v.pri de|prep.s jiló|sub.cc .
+Ele|pron.reto não|adv.neg veio|v.pri e|conj.adi tampouco|adv.neg|=_também_não:_advérbio_de_negação ligou|v.pri .
+Não|adv.neg , eu|pron.reto não|adv.neg quero|v.pri .
+Sim|adv.afi , ela|pron.reto passou|v.pri na|prep.c prova|sub .
+Realmente|adv.afi , o|art.def show|sub foi|v.lig ótimo|adj .
+Efetivamente|adv.afi , o|art.def plano|sub funcionou|v.pri .
+Decerto|adv.afi|=_certamente:_afirmação ele|pron.reto voltará|v.pri .
+Possivelmente|adv.duv choverá|v.pri hoje|adv.tem .
+Quiçá|adv.duv|=_talvez:_dúvida tenhamos|v.pri sorte|sub.ca .
+Talvez|adv.duv ela|pron.reto esteja|v.lig cansada|adj .
+Acaso|adv.duv|=_porventura:_expressa_dúvida você|pron.trat viu|v.pri meu|pron.pos gato|sub.cc ?
+Provavelmente|adv.duv eles|pron.reto já|adv.tem saíram|v.pri .
+O|art.def livro|sub.cc está|v.pri|=_encontra-se_(lugar):_não_liga_a_característica sobre|prep.s a|art.def mesa|sub.cc .
+Ele|pron.reto lutou|v.pri contra|prep.s o|art.def medo|sub.ca .
+Ela|pron.reto sentou|v.pri entre|prep.s os|art.def irmãos|sub.cc .
+Após|prep.s o|art.def jantar|sub|com_artigo,_o_verbo_vira_substantivo , saímos|v.pri .
+O|art.def réu|sub.cc falou|v.pri perante|prep.s o|art.def juiz|sub.cc .
+Durante|prep.s|preposição_acidental_(=_no_decorrer_de) a|art.def aula|sub , ninguém|pron.ind falou|v.pri .
+Ela|pron.reto estuda|v.pri desde|prep.s janeiro|sub|nome_de_mês_é_substantivo_comum_(minúsculo) .
+Fui|v.pri ao|prep.c|a_(preposição)_+_o_(artigo) mercado|sub.cc com|prep.s meu|pron.pos pai|sub.cc .
+Cheguei|v.pri às|prep.c|a_(preposição)_+_as_(artigo):_crase oito|num.card horas|sub .
+Dei|v.pri comida|sub.cc aos|prep.c|a_(preposição)_+_os_(artigo) cachorros|sub.cc .
+Passeamos|v.pri pelo|prep.c parque|sub.cc .
+Moramos|v.pri numa|prep.c|em_(preposição)_+_uma_(artigo) casa|sub.cc pequena|adj .
+Ele|pron.reto mora|v.pri num|prep.c apartamento|sub.cc .
+As|art.def chaves|sub.cc estão|v.pri|=_encontram-se_(lugar) nas|prep.c gavetas|sub.cc .
+O|art.def bolo|sub.cc das|prep.c crianças|sub.cc acabou|v.pri .
+Viajamos|v.pri de|prep.s avião|sub.cc para|prep.s Recife|sub.pr .
+Ele|pron.reto saiu|v.pri sem|prep.s guarda-chuva|sub.cc e|conj.adi se|pron.obl|pronome_oblíquo:_ele_molhou_a_si_mesmo molhou|v.pri .
+Esperei|v.pri por|prep.s você|pron.trat .
+Entreguei|v.pri o|art.def presente|sub.cc a|prep.s|antes_de_nome_próprio_masculino_não_cabe_artigo_'a':_preposição João|sub.pr .
+Ela|pron.reto canta|v.pri e|conj.adi dança|v.pri .
+Não|adv.neg comi|v.pri nem|conj.adi|=_e_não:_soma_ideias_negativas bebi|v.pri .
+Comprei|v.pri pão|sub.cc , queijo|sub.cc e|conj.adi presunto|sub.cc .
+O|art.def gato|sub.cc é|v.lig bonito|adj e|conj.adi carinhoso|adj .
+Estudei|v.pri , mas|conj.adv não|adv.neg passei|v.pri .
+Ela|pron.reto é|v.lig jovem|adj , porém|conj.adv experiente|adj .
+Choveu|v.pri ; contudo|conj.adv|=_mas:_oposição o|art.def jogo|sub continuou|v.pri .
+Treinou|v.pri bastante|adv.int ; todavia|conj.adv|=_mas:_oposição perdeu|v.pri .
+Ele|pron.reto prometeu|v.pri ; entretanto|conj.adv|=_porém:_oposição não|adv.neg cumpriu|v.pri .
+A|art.def prova|sub era|v.lig difícil|adj ; no_entanto|conj.adv|locução_adversativa_(=_porém) todos|pron.ind passaram|v.pri .
+Você|pron.trat prefere|v.pri chá|sub.cc ou|conj.alt café|sub.cc ?
+Quer|conj.alt|'quer..._quer':_alternância_(não_é_o_verbo_querer) chova|v.pri , quer|conj.alt faça|v.pri sol|sub.cc , iremos|v.pri .
+Ora|conj.alt estuda|v.pri , ora|conj.alt brinca|v.pri .
+Venha|v.pri agora|adv.tem ou|conj.alt perderá|v.pri o|art.def ônibus|sub.cc .
+Ou|conj.alt você|pron.trat fala|v.pri , ou|conj.alt eu|pron.reto falo|v.pri .
+Ele|pron.reto treinou|v.pri muito|adv.int ; portanto|conj.concl vencerá|v.pri .
+O|art.def céu|sub.cc escureceu|v.pri , logo|conj.concl|=_portanto:_conclusão vai|v.aux chover|v.pri .
+Ela|pron.reto estudou|v.pri ; passará|v.pri , pois|conj.concl|depois_do_verbo_e_entre_vírgulas,_'pois'_=_portanto , na|prep.c prova|sub .
+O|art.def show|sub lotou|v.pri ; por_conseguinte|conj.concl|locução_conclusiva_(=_portanto) os|art.def ingressos|sub.cc acabaram|v.pri .
+Ele|pron.reto mentiu|v.pri , portanto|conj.concl perdeu|v.pri nossa|pron.pos confiança|sub.ca .
+Leve|v.pri um|art.ind casaco|sub.cc , pois|conj.expl|explica_o_pedido_(vem_depois_de_uma_ordem) esfriou|v.pri .
+Ela|pron.reto deve|v.aux estar|v.lig cansada|adj , pois|conj.expl|explica_por_que_se_supõe_isso trabalhou|v.pri muito|adv.int .
+Não|adv.neg demore|v.pri , que|conj.expl|=_pois:_explica_o_pedido o|art.def filme|sub vai|v.aux começar|v.pri .
+Corra|v.pri , porque|conj.expl|depois_de_uma_ordem,_explica_o_pedido:_coordenativa_explicativa o|art.def trem|sub.cc está|v.aux partindo|v.pri .
+Choveu|v.pri , porque|conj.expl|explica_por_que_se_afirma_isso_(é_indício,_não_causa) a|art.def rua|sub.cc está|v.lig molhada|adj .
+Quero|v.pri que|conj.int|inicia_a_oração_que_completa_'quero' você|pron.trat venha|v.pri .
+É|v.lig importante|adj que|conj.int todos|pron.ind participem|v.pri .
+Perguntei|v.pri se|conj.int|inicia_a_oração_que_completa_'perguntei' ela|pron.reto viria|v.pri .
+Não|adv.neg sabemos|v.pri se|conj.int o|art.def voo|sub atrasou|v.pri .
+Ele|pron.reto afirmou|v.pri que|conj.int estava|v.lig doente|adj .
+Não|adv.neg saí|v.pri porque|conj.caus|causa_real:_a_chuva_fez_eu_não_sair chovia|v.pri .
+Como|conj.caus|no_início_da_frase,_=_porque/já_que perdeu|v.pri o|art.def ônibus|sub.cc , chegou|v.pri atrasado|adj .
+Visto_que|conj.caus|locução_causal_(=_já_que) ninguém|pron.ind veio|v.pri , cancelamos|v.pri a|art.def reunião|sub .
+Uma_vez_que|conj.caus|locução_causal_(=_já_que) você|pron.trat pediu|v.pri , eu|pron.reto ajudo|v.pri .
+Já_que|conj.caus você|pron.trat insiste|v.pri , vou|v.aux contar|v.pri .
+Quando|conj.temp chegar|v.pri , ligue|v.pri para|prep.s mim|pron.obl .
+Logo_que|conj.temp|locução_temporal_(=_assim_que) o|art.def sinal|sub.cc tocou|v.pri , todos|pron.ind saíram|v.pri .
+Sempre_que|conj.temp|locução_temporal_(=_toda_vez_que) chove|v.pri , a|art.def rua|sub.cc alaga|v.pri .
+Depois_que|conj.temp|locução_temporal ele|pron.reto saiu|v.pri , a|art.def festa|sub acabou|v.pri .
+Antes_que|conj.temp|locução_temporal escureça|v.pri , voltaremos|v.pri .
+Enquanto|conj.temp ela|pron.reto lia|v.pri , o|art.def gato|sub.cc dormia|v.pri .
+Se|conj.cond|introduz_uma_condição_(=_caso) estudar|v.pri , você|pron.trat passará|v.pri .
+Caso|conj.cond|=_se:_introduz_condição chova|v.pri , o|art.def passeio|sub será|v.aux adiado|v.pri .
+Desde_que|conj.cond|com_verbo_no_subjuntivo,_=_contanto_que:_condição você|pron.trat estude|v.pri , pode|v.aux sair|v.pri .
+Contanto_que|conj.cond|locução_condicional você|pron.trat volte|v.pri cedo|adv.tem , pode|v.aux ir|v.pri .
+A_menos_que|conj.cond|locução_condicional_(=_salvo_se) chova|v.pri , jogaremos|v.pri .
+Embora|conj.conc chovesse|v.pri , saímos|v.pri .
+Mesmo_que|conj.conc|locução_concessiva_(=_embora) você|pron.trat peça|v.pri , não|adv.neg irei|v.pri .
+Se_bem_que|conj.conc|locução_concessiva_(=_embora) estivesse|v.lig cansada|adj , ela|pron.reto dançou|v.pri .
+Conquanto|conj.conc|=_embora:_concessão fosse|v.lig rico|adj , vivia|v.pri modestamente|adv.mod .
+Ainda_que|conj.conc seja|v.lig difícil|adj , vou|v.aux tentar|v.pri .
+Falei|v.pri baixo|adv.mod|modifica_'falei'_e_não_varia para_que|conj.fin o|art.def bebê|sub.cc não|adv.neg acordasse|v.pri .
+Trabalhamos|v.pri muito|adv.int a_fim_de_que|conj.fin|locução_final_(=_para_que) tudo|pron.ind ficasse|v.lig pronto|adj .
+Fechei|v.pri a|art.def janela|sub.cc para_que|conj.fin o|art.def frio|sub|com_artigo,_é_substantivo não|adv.neg entrasse|v.pri .
+Ela|pron.reto economiza|v.pri para_que|conj.fin os|art.def filhos|sub.cc estudem|v.pri .
+O|art.def professor|sub.cc repetiu|v.pri a|art.def explicação|sub a_fim_de_que|conj.fin todos|pron.ind entendessem|v.pri .
+Ela|pron.reto é|v.lig mais|adv.int alta|adj do_que|conj.comp|locução_comparativa_(mais..._do_que) a|art.def irmã|sub.cc .
+Ele|pron.reto corre|v.pri como|conj.comp|compara:_=_do_mesmo_jeito_que um|art.ind leão|sub.cc .
+Estudei|v.pri tanto|adv.int quanto|conj.comp|'tanto..._quanto':_comparação_de_igualdade você|pron.trat .
+O|art.def gato|sub.cc é|v.lig menos|adv.int agitado|adj que|conj.comp|compara:_menos_agitado_(do)_que o|art.def cachorro|sub.cc .
+Nada|pron.ind é|v.lig tão|adv.int bom|adj quanto|conj.comp férias|sub .
+Choveu|v.pri tanto|adv.int que|conj.cons|consequência_de_'choveu_tanto' o|art.def rio|sub.cc transbordou|v.pri .
+Ele|pron.reto correu|v.pri tão|adv.int rápido|adv.mod que|conj.cons|consequência_de_'tão_rápido' perdeu|v.pri o|art.def fôlego|sub .
+A|art.def comida|sub.cc estava|v.lig tão|adv.int boa|adj que|conj.cons repeti|v.pri .
+Ela|pron.reto riu|v.pri tanto|adv.int que|conj.cons chorou|v.pri .
+O|art.def barulho|sub era|v.lig tão|adv.int alto|adj que|conj.cons ninguém|pron.ind dormiu|v.pri .
+Conforme|conj.conf|=_como:_inicia_oração_(tem_verbo:_explicou) o|art.def professor|sub.cc explicou|v.pri , a|art.def prova|sub será|v.lig longa|adj .
+Como|conj.conf|=_conforme:_'como_combinamos' combinamos|v.pri , chegarei|v.pri cedo|adv.tem .
+Segundo|conj.conf|=_conforme;_inicia_oração_(tem_verbo:_afirmam) os|art.def médicos|sub.cc afirmam|v.pri , o|art.def sono|sub.ca é|v.lig essencial|adj .
+Consoante|conj.conf|=_conforme:_conformidade a|art.def lei|sub determina|v.pri , todos|pron.ind votarão|v.pri .
+Montei|v.pri o|art.def móvel|sub.cc conforme|conj.conf o|art.def manual|sub.cc ensinava|v.pri .
+À_medida_que|conj.prop|locução_proporcional:_uma_coisa_aumenta_junto_com_a_outra o|art.def tempo|sub passava|v.pri , ela|pron.reto ficava|v.lig mais|adv.int calma|adj .
+À_proporção_que|conj.prop|locução_proporcional_(=_à_medida_que) subíamos|v.pri , o|art.def ar|sub.cc ficava|v.lig frio|adj .
+Quanto_mais|conj.prop|correlação_'quanto_mais..._mais':_proporção estudo|v.pri , mais|adv.int aprendo|v.pri .
+À_medida_que|conj.prop a|art.def noite|sub chegava|v.pri , a|art.def temperatura|sub caía|v.pri .
+À_proporção_que|conj.prop crescia|v.pri , o|art.def menino|sub.cc ficava|v.lig mais|adv.int forte|adj .
+Oh|interj ! Eu|pron.reto esqueci|v.pri a|art.def chave|sub.cc !
+Ah|interj , agora|adv.tem entendi|v.pri !
+Puxa|interj|aqui_exprime_espanto:_interjeição_(não_é_o_verbo_puxar) ! Você|pron.trat acertou|v.pri tudo|pron.ind !
+Opa|interj ! Quase|adv.int derrubei|v.pri o|art.def copo|sub.cc .
+Ei|interj , espere|v.pri por|prep.s mim|pron.obl !
+Socorro|interj|pedido_de_ajuda_isolado,_com_'!':_interjeição ! O|art.def barco|sub.cc está|v.aux afundando|v.pri !
+Bravo|interj|exprime_aplauso:_interjeição ! A|art.def apresentação|sub foi|v.lig perfeita|adj !
+Credo|interj ! Isso|pron.dem é|v.lig assustador|adj !
+Olá|interj , Marta|sub.pr !
+Xi|interj , acabou|v.pri a|art.def bateria|sub.cc .
+A|art.def|artigo:_acompanha_'porta' porta|sub.cc estava|v.lig aberta|adj , e|conj.adi eu|pron.reto a|pron.obl|retoma_'porta';_acompanha_o_verbo fechei|v.pri .
+Contei|v.pri a|prep.s|antes_de_nome_próprio_masculino:_preposição Paulo|sub.pr toda|pron.ind a|art.def história|sub .
+Que|adv.int|em_exclamação,_intensifica_o_adjetivo_(=_quão) bonita|adj casa|sub.cc !
+Que|adv.int|em_exclamação,_intensifica_o_adjetivo engraçado|adj !
+O|art.def quarto|sub.cc|aqui_é_o_cômodo_da_casa:_substantivo está|v.lig bem|adv.int|=_muito:_intensifica_'arrumado' arrumado|adj .
+Ela|pron.reto se|pron.obl|pronome_reflexivo:_ela_cortou_a_si_mesma cortou|v.pri com|prep.s a|art.def faca|sub.cc .
+Se|conj.cond|condição_(=_caso) você|pron.trat quiser|v.pri , eu|pron.reto te|pron.obl levo|v.pri .
+Não|adv.neg sei|v.pri se|conj.int|inicia_a_oração_que_completa_'sei' vou|v.pri .
+Ele|pron.reto se|pron.obl feriu|v.pri no|prep.c jogo|sub .
+Como|adv.mod|advérbio_interrogativo_de_modo:_'de_que_jeito?' você|pron.trat chegou|v.pri aqui|adv.lug ?
+Ela|pron.reto nada|v.pri|aqui_é_verbo_(nadar):_ela_nada_no_mar como|conj.comp|compara:_=_do_mesmo_jeito_que um|art.ind peixe|sub.cc .
+Nada|pron.ind|=_coisa_alguma:_pronome_indefinido mudou|v.pri .
+Comprei|v.pri um|art.ind|indefinido:_um_presente_qualquer presente|sub.cc para|prep.s minha|pron.pos mãe|sub.cc .
+Os|art.def alunos|sub.cc presentes|adj|caracteriza_'alunos'_(=_que_estão_ali) votaram|v.pri .
+O|art.def jovem|sub.cc|com_artigo,_nomeia_a_pessoa:_substantivo ajudou|v.pri a|art.def senhora|sub.cc|aqui_nomeia_a_pessoa_(mulher_idosa):_substantivo .
+O|art.def professor|sub.cc jovem|adj|caracteriza_'professor':_adjetivo explicou|v.pri bem|adv.mod .
+Usamos|v.pri a|art.def mesma|pron.dem|=_idêntica:_pronome_demonstrativo sala|sub.cc .
+As|art.def meninas|sub.cc estavam|v.lig meio|adv.int|=_um_pouco;_não_varia_(meio,_não_'meias') assustadas|adj .
+Comi|v.pri meio|num.frac|=_metade_de_um_sanduíche sanduíche|sub.cc .
+Temos|v.pri muito|pron.ind|acompanha_o_substantivo_'trabalho'_e_varia trabalho|sub .
+Ela|pron.reto é|v.lig muito|adv.int|intensifica_'gentil'_(não_varia) gentil|adj .
+Poucos|pron.ind alunos|sub.cc faltaram|v.pri .
+Dormi|v.pri pouco|adv.int|modifica_o_verbo_'dormi'_(não_varia) .
+Um|art.ind|indefinido:_'um_dia'_qualquer dia|sub voltarei|v.pri .
+Ganhei|v.pri um|num.card|quantidade_exata_(contrasta_com_'três') prêmio|sub , e|conj.adi ela|pron.reto ganhou|v.pri três|num.card .
+O|art.def segundo|num.ord|indica_ordem:_numeral_ordinal candidato|sub.cc falou|v.pri melhor|adv.mod|=_mais_bem:_modifica_'falou' .
+Espere|v.pri um|art.ind segundo|sub|com_artigo,_é_unidade_de_tempo:_substantivo .
+Segundo|prep.s|=_de_acordo_com;_sem_verbo_depois:_preposição o|art.def técnico|sub.cc , o|art.def time|sub melhorou|v.pri .
+Conforme|prep.s|=_de_acordo_com;_não_inicia_oração_(sem_verbo) o|art.def combinado|sub|particípio_substantivado_(com_artigo) , saímos|v.pri às|prep.c sete|num.card .
+Logo|adv.tem|=_em_breve:_aqui_indica_tempo voltaremos|v.pri .
+Ele|pron.reto estudou|v.pri , logo|conj.concl|=_portanto:_conclusão sabe|v.pri a|art.def matéria|sub .
+Ela|pron.reto chegou|v.pri cedo|adv.tem para|prep.s|antes_de_infinitivo_(sem_'que'):_preposição pegar|v.pri um|art.ind lugar|sub bom|adj .
+Para_que|conj.fin|locução_final_(finalidade) ninguém|pron.ind se|pron.obl atrasasse|v.pri , saímos|v.pri cedo|adv.tem .
+Certamente|adv.afi você|pron.trat vai|v.aux gostar|v.pri do|prep.c presente|sub.cc .
+Eles|pron.reto realmente|adv.afi|=_de_fato:_afirmação venceram|v.pri o|art.def torneio|sub .
+A|art.def turma|sub.col , porém|conj.adv|=_mas:_oposição_(aqui_entre_vírgulas) , não|adv.neg desistiu|v.pri .
+Ontem|adv.tem caiu|v.pri um|art.ind temporal|sub.cc|aqui_é_substantivo_(=_tempestade),_não_conjunção forte|adj .
 `;
 
 const PUNCT = /^[.,!?;:]$/;
